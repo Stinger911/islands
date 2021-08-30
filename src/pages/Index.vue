@@ -1,34 +1,59 @@
 <template>
   <q-page class="flex flex-center"  style="background: url('/background02.jpg')">
-    <img
-      alt="Quasar logo"
-      src="~assets/island.png"
-      v-if="!loaded"
-      style="width: 200px; height: 200px"
-      @click="load()"
-    >
-    <cube v-if="loaded" />
+    <div class="column">
+      <img
+        alt="logo"
+        src="~assets/island.png"
+        style="width: 200px; height: 200px"
+        />
+      <q-btn to="/game" color="primary" glossy class="q-mt-sm">
+        Start new game
+      </q-btn>
+    </div>
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-import cube from "components/cube";
 
 export default defineComponent({
-  components: { cube  },
   name: 'MainPage',
   setup () {
+    function linkClick (e, go) {
+      e.preventDefault() // we choose when we navigate
+
+      // console.log('triggering navigation in 3s')
+      setTimeout(() => {
+        // console.log('navigating as promised 3s ago')
+        go()
+      }, 3000)
+    }
+
+    function buttonProps ({ href, route, isActive, isExactActive }) {
+      const props = {
+        color: 'black',
+        noCaps: true,
+        label: `To "${route.fullPath}"`,
+        outline: true,
+        to: href
+      }
+
+      if (isActive === true) {
+        props.color = isExactActive === true ? 'primary' : 'amber-9'
+      }
+      else {
+        props.color = 'black'
+      }
+
+      return props
+    }
+
     return {
-      loaded: true,
+      linkClick,
+      buttonProps
     }
   },
   methods: {
-    load() {
-      this.loaded = !this.loaded;
-      console.log("load", this.loaded);
-      this.$forceUpdate();
-    }
   }
 })
 </script>
