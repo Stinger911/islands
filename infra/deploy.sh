@@ -17,7 +17,8 @@ export GITCOMMIT=`git rev-parse HEAD | head -c 8`
 rm -rf dist
 mkdir -p "dist/git-$DIST"
 cd "dist/git-$DIST"
-git clone https://github.com/Stinger911/ds-test.git .
+git clone git@github.com:Stinger911/ds-test.git .
+rm -rf *
 git branch -m gh-pages
 cd ../..
 GITCOMMIT=$GITCOMMIT npx quasar build -m $DIST
