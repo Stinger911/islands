@@ -20,7 +20,7 @@ export default defineComponent({
     },
     face: {
       validator (value) {
-        return ["front", "top", "bottom", "left", "right"].includes(value)
+        return ["front", "back", "top", "bottom", "left", "right"].includes(value)
       },
       required: true,
     },
@@ -62,6 +62,7 @@ export default defineComponent({
 <style scoped>
   .tile {
     border: 1px solid #1D1D1D;
+    background: rgba(255, 228, 196, 0.98);
   }
   .face {
     border: 1px solid #222;

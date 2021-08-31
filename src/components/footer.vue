@@ -1,7 +1,7 @@
 <template>
   <q-toolbar v-if="path !== '404'">
     <q-toolbar-title class="fit row wrap justify-center items-start content-start">
-      <div style="max-width: 700px; width: 100%" v-if="path === '/game'">Info:</div>
+      <game-controls v-if="path === '/game'" />
     </q-toolbar-title>
   </q-toolbar>
 </template>
@@ -9,9 +9,11 @@
 <script>
 import {useRoute} from 'vue-router';
 import {computed} from 'vue';
+import GameControls from "components/GameControls";
 
 export default {
   name: "GameFooter",
+  components: {GameControls},
   setup() {
     const route=useRoute();
 
