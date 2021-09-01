@@ -1,13 +1,18 @@
 <template>
   <div style="border: #1D1D1D solid 1px" :id="face" class="face" :style="faceStyle()">
-    <div v-for="t in tiles" :key="t" class="row">
-      <div v-for="x in t" :key="x" class="tile" :style="tileSizeStyle()" />
+    <div v-for="r in faceSize" :key="'r' + r" class="row">
+      <div v-for="c in faceSize" :key="'c' + c" class="tile" :style="tileSizeStyle()">
+        <div class="entity" v-for="e in tileEntities(c, r)" :key="e">{{ e }}</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import {defineComponent} from "vue";
+import store from "src/store/store";
+
+const faceNames = ["front", "back", "top", "bottom", "left", "right"];
 
 export default defineComponent({
   name: "CubeFace",
@@ -20,7 +25,7 @@ export default defineComponent({
     },
     face: {
       validator (value) {
-        return ["front", "back", "top", "bottom", "left", "right"].includes(value)
+        return faceNames.includes(value)
       },
       required: true,
     },
@@ -36,7 +41,10 @@ export default defineComponent({
   computed: {
     tileSize() {
       return this.$props.spaceSize / 10;
-    }
+    },
+    faceSize() {
+      return store.state.planet.size;
+    },
   },
   methods: {
     tileSizeStyle() {
@@ -54,7 +62,17 @@ export default defineComponent({
         case "top": return `transform: rotateX(90deg) rotateZ(90deg) translateZ(${rtz}px)`
         case "bottom": return `transform: rotateX(-90deg) rotateZ(-90deg) translateZ(${rtz}px)`
       }
+    },
+    tileEntities(ci, ri) {
+      const entities = [];
+      const loc = store.state.player.location;
+      const fn = faceNames.indexOf(this.face);
+      if (ci === loc.col && ri === loc.row && fn === loc.face) {
+        entities.push('@');
+      }
+      return entities;
     }
+
   },
 })
 </script>
@@ -73,5 +91,8 @@ export default defineComponent({
     color: #000;
     text-shadow: none;
     text-align: center;
+  }
+  .entity {
+    font-size: .35em;
   }
 </style>

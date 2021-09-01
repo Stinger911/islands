@@ -1,6 +1,6 @@
 {
   "name": "islands",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Steampunk roguelike game",
   "productName": "Islands in the Void",
   "author": "Andrew Abramov <stinger911@gmail.com>",
@@ -9,7 +9,8 @@
     "dev": "quasar dev",
     "build": "npx quasar build",
     "lint": "eslint --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "pre-commit": "npm --no-git-tag-version version patch"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",

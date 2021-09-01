@@ -1,6 +1,6 @@
 <template>
   <div id="cubeSpace" :style="sizeStyle()">
-      <div id="cube" :style="cubeStyle()" :data-size="size" class="flex flex-center">
+      <div id="cube" ref="cubeController" :style="cubeStyle()" :data-size="size" class="flex flex-center">
         <CubeFace face="front" :tiles="planet.faces[0]" :space-size="cubeSize" />
         <CubeFace face="back" :tiles="planet.faces[2]" :space-size="cubeSize" />
 
@@ -35,6 +35,12 @@ export default defineComponent({
       dieRotation: ref({ x: 0, y: 0, z:0 }),
       cubeSize: ref(sz * 0.71),
     }
+  },
+  mounted() {
+    window.addEventListener('keyup', this.handleKeyPress);
+  },
+  beforeUnmount() {
+    window.removeEventListener('keyup', this.handleKeyPress);
   },
   computed: {
     adjustedDieRotation() {
@@ -79,6 +85,34 @@ export default defineComponent({
       style.push(`transform: rotateX(${this.adjustedDieRotation.x}deg) rotateY(${this.adjustedDieRotation.y}deg) rotateZ(${this.adjustedDieRotation.z}deg)`);
       console.log(style.join("; "));
       return style.join("; ")
+    },
+    handleKeyPress(e) {
+      switch(e.keyCode) {
+        case 32: // space
+        case 13: // enter
+          console.log("Call action")
+          break;
+        case 87: // w
+        case 75: // k
+        case 38: // UP
+          store.playerActions.moveUp();
+          break;
+        case 65: //a
+        case 72: //h
+        case 37: //left
+          store.playerActions.moveLeft();
+          break;
+        case 83: //s
+        case 74: //j
+        case 40: //down
+          store.playerActions.moveDown();
+          break;
+        case 68: //d
+        case 76: //l
+        case 39: //right
+          store.playerActions.moveRight();
+          break;
+      }
     },
   }
 })

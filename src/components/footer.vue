@@ -2,6 +2,7 @@
   <q-toolbar v-if="path !== '404'">
     <q-toolbar-title class="fit row wrap justify-center items-start content-start">
       <game-controls v-if="path === '/game'" />
+      <div class="text-center">Version: {{ version }}</div>
     </q-toolbar-title>
   </q-toolbar>
 </template>
@@ -10,6 +11,7 @@
 import {useRoute} from 'vue-router';
 import {computed} from 'vue';
 import GameControls from "components/GameControls";
+import { version } from "../../package";
 
 export default {
   name: "GameFooter",
@@ -20,7 +22,8 @@ export default {
     const path = computed(() => route.path)
 
     return {
-      path
+      path,
+      version,
     };
   },
 }

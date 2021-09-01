@@ -1,7 +1,10 @@
 <template>
   <div style="max-width: 700px; width: 100%" class="row no-wrap items-center">
-    <q-btn outline>
-      Stats Icons
+    <q-btn outline icon="analytics">
+      <q-tooltip>
+        <b>Stats</b><br/>
+        Keys: <b>I</b>
+      </q-tooltip>
     </q-btn>
     <q-space />
     <q-btn outline icon="group_work">
@@ -47,28 +50,16 @@ export default defineComponent({
   name: "GameControls",
   methods:  {
     moveLeft() {
-      console.log(store.state.player.location);
-      if (store.state.player.location.col > 0) {
-        store.state.player.location.col -= 1;
-      }
+      store.playerActions.moveLeft();
     },
     moveRight() {
-      console.log(store.state.player.location);
-      if (store.state.player.location.col < store.state.planet.size) {
-        store.state.player.location.col += 1;
-      }
+      store.playerActions.moveRight();
     },
     moveUp() {
-      console.log(store.state.player.location);
-      if (store.state.player.location.row > 0) {
-        store.state.player.location.row -= 1;
-      }
+      store.playerActions.moveUp();
     },
     moveDown() {
-      console.log(store.state.player.location);
-      if (store.state.player.location.row < store.state.planet.size) {
-        store.state.player.location.row += 1;
-      }
+      store.playerActions.moveDown();
     },
   }
 })
