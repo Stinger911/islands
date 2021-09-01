@@ -67,7 +67,7 @@ export default defineComponent({
       const entities = [];
       const loc = store.state.player.location;
       const fn = faceNames.indexOf(this.face);
-      if (ci === loc.col && ri === loc.row && fn === loc.face) {
+      if (ci-1 === loc.col && ri-1 === loc.row && fn === loc.face) {
         entities.push('@');
       }
       return entities;

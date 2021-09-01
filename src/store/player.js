@@ -19,7 +19,7 @@ export const playerActions = {
     },
     moveRight() {
         console.log(store.state.player.location);
-        if (store.state.player.location.col < store.state.planet.size) {
+        if (store.state.player.location.col < store.state.planet.size - 1) {
             store.state.player.location.col += 1;
         }
     },
@@ -31,7 +31,7 @@ export const playerActions = {
     },
     moveDown() {
         console.log(store.state.player.location);
-        if (store.state.player.location.row < store.state.planet.size) {
+        if (store.state.player.location.row < store.state.planet.size - 1) {
             store.state.player.location.row += 1;
         }
     },
