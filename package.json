@@ -1,6 +1,6 @@
 {
   "name": "islands",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Steampunk roguelike game",
   "productName": "Islands in the Void",
   "author": "Andrew Abramov <stinger911@gmail.com>",
@@ -9,8 +9,9 @@
     "dev": "quasar dev",
     "build": "npx quasar build",
     "lint": "eslint --ext .js,.vue ./",
+    "lint-fix": "eslint --fix --ext .js,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
-    "pre-commit": "npm --no-git-tag-version version patch"
+    "pre-commit": "npm run lint-fix && npm --no-git-tag-version version patch && git add package*.json"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
