@@ -21,6 +21,7 @@ module.exports = configure(function (ctx) {
 
   appenv["MAIN_BUILD_DATE"] = `"${new Date().toISOString()}"`;
   appenv["MAIN_BUILD_GIT"] = `"${process.env.GITCOMMIT}"`;
+  appenv["PACKAGE_VERSION"] = require('./package.json').version;
 
   return {
     // https://v2.quasar.dev/quasar-cli/supporting-ts
@@ -105,7 +106,9 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'Dialog'
+      ]
     },
 
     // animations: 'all', // --- includes all animations

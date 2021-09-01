@@ -11,7 +11,6 @@
 import {useRoute} from 'vue-router';
 import {computed} from 'vue';
 import GameControls from "components/GameControls";
-import { version } from "../../package";
 
 export default {
   name: "GameFooter",
@@ -23,7 +22,7 @@ export default {
 
     return {
       path,
-      version,
+      version: process.env.PACKAGE_VERSION,
     };
   },
 }

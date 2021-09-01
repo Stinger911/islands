@@ -11,6 +11,24 @@
         <CubeFace face="bottom" :tiles="planet.faces[5]" :space-size="cubeSize" />
       </div>
   </div>
+  <q-dialog v-model="statsDlg" seamless position="bottom">
+    <q-card style="width: 350px; position: absolute; left: 20px; bottom: 70px">
+      <h6 class="q-ma-xs">On {{ planet.name }}</h6>
+
+      <q-card-section class="row items-center no-wrap">
+        <div>
+          <div class="text-weight-bold">The Walker</div>
+          <div class="text-grey">Fitz & The Tantrums</div>
+        </div>
+
+        <q-space />
+
+        <q-btn flat round icon="play_arrow" />
+        <q-btn flat round icon="pause" />
+        <q-btn flat round icon="close" @click="closeStats()"/>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -43,10 +61,12 @@ export default defineComponent({
     window.removeEventListener('keyup', this.handleKeyPress);
   },
   computed: {
+    statsDlg() {
+      return store.state.showStats;
+    },
     adjustedDieRotation() {
       let rotation = this.dieRotation;
       const location = store.state.player.location;
-      console.log(rotation, location, this.currentFace);
       //dont tilt the die if we're looking at a face other than the one the player is on
       if (location.face !== this.currentFace) {
         return rotation;
@@ -62,11 +82,9 @@ export default defineComponent({
       ];
       const colShift = -30 + (60 / (this.planet.size - 1) * location.col);
       const rowShift = -30 + (60 / (this.planet.size - 1) * location.row);
-      console.log(colShift, rowShift);
       //make column-based adjustments
       rotation[faceAxes[this.currentFace].col] = colShift * faceAxes[this.currentFace].colMultiplier;
       rotation[faceAxes[this.currentFace].row] = rowShift * faceAxes[this.currentFace].rowMultiplier;
-      console.log(rotation);
       return rotation;
     }
   },
@@ -83,14 +101,19 @@ export default defineComponent({
       //style.push(`width: ${this.size * 0.75}px`)
       //style.push(`height: ${this.size * 0.75}px`)
       style.push(`transform: rotateX(${this.adjustedDieRotation.x}deg) rotateY(${this.adjustedDieRotation.y}deg) rotateZ(${this.adjustedDieRotation.z}deg)`);
-      console.log(style.join("; "));
       return style.join("; ")
+    },
+    closeStats() {
+      store.setStatsVisibility(false);
     },
     handleKeyPress(e) {
       switch(e.keyCode) {
         case 32: // space
         case 13: // enter
           console.log("Call action")
+          break;
+        case 73: //i
+          store.setStatsVisibility(! store.state.showStats);
           break;
         case 87: // w
         case 75: // k

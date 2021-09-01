@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center"  style="background: url('/background02.jpg')">
+  <q-page class="flex flex-center"  style="background: url('background02.jpg')">
     <cube />
   </q-page>
 </template>
@@ -7,6 +7,7 @@
 <script>
 import { defineComponent } from 'vue';
 import Cube from "components/cube";
+import store from "src/store/store";
 
 export default defineComponent({
   components: { Cube  },
@@ -14,7 +15,10 @@ export default defineComponent({
   setup () {
     return { }
   },
-  methods: {
+  mounted() {
+    if (! store.state.game.seed) {
+      this.$router.push("/");
+    }
   }
 })
 </script>

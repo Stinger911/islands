@@ -1,6 +1,6 @@
 <template>
   <div style="max-width: 700px; width: 100%" class="row no-wrap items-center">
-    <q-btn outline icon="analytics">
+    <q-btn outline icon="analytics" @click="showStats()">
       <q-tooltip>
         <b>Stats</b><br/>
         Keys: <b>I</b>
@@ -49,6 +49,9 @@ import store from "src/store/store";
 export default defineComponent({
   name: "GameControls",
   methods:  {
+    showStats() {
+      store.setStatsVisibility(!store.state.showStats);
+    },
     moveLeft() {
       store.playerActions.moveLeft();
     },

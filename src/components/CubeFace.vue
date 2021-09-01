@@ -1,7 +1,7 @@
 <template>
-  <div style="border: #1D1D1D solid 1px" :id="face" class="face" :style="faceStyle()">
+  <div :id="face" class="face" :style="faceStyle()">
     <div v-for="r in faceSize" :key="'r' + r" class="row">
-      <div v-for="c in faceSize" :key="'c' + c" class="tile" :style="tileSizeStyle()">
+      <div v-for="c in faceSize" :key="'c' + c" class="tile" :class="tileClass(c, r)" :style="tileSizeStyle()">
         <div class="entity" v-for="e in tileEntities(c, r)" :key="e">{{ e }}</div>
       </div>
     </div>
@@ -71,19 +71,38 @@ export default defineComponent({
         entities.push('@');
       }
       return entities;
+    },
+    tileClass(c, r) {
+      let tc="cube-tile-set cube-tile-set-" + store.state.planet.type + " ";
+      console.log(c, r, this.$props.tiles);
+      const tl = this.$props.tiles[r-1][c-1];
+      switch (tl)  {
+        case "X":
+          tc += "cube-tile-wall";
+          break;
+        case "T":
+          tc += "cube-tile-tree";
+          break;
+        case "g":
+          tc += "cube-tile-grass";
+          break;
+        case "w":
+          tc += "cube-tile-water";
+          break;
+        default:
+          tc += "cube-tile-open";
+      }
+      return tc;
     }
-
   },
 })
 </script>
 
 <style scoped>
   .tile {
-    border: 1px solid #1D1D1D;
-    background: rgba(255, 228, 196, 0.98);
   }
   .face {
-    border: 1px solid #222;
+    /*border: 1px solid #222;*/
     display: block;
     position: absolute;
     background-color: transparent;
@@ -94,5 +113,20 @@ export default defineComponent({
   }
   .entity {
     font-size: .35em;
+  }
+  .cube-tile-wall {
+    background: dimgray;
+  }
+  .cube-tile-tree {
+    background: darkgreen;
+  }
+  .cube-tile-grass {
+    background: darkolivegreen;
+  }
+  .cube-tile-water {
+    background: aquamarine;
+  }
+  .cube-tile-open {
+    background: olivedrab;
   }
 </style>

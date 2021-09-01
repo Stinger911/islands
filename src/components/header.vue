@@ -10,6 +10,10 @@
             <q-item clickable v-close-popup>
               <q-item-section>About</q-item-section>
             </q-item>
+            <q-separator/>
+            <q-item clickable v-close-popup class="text-negative" @click="resetGame()">
+              <q-item-section>Reset game</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </q-btn>
@@ -20,7 +24,19 @@
 
 <script>
 export default {
-  name: "GameHeader"
+  name: "GameHeader",
+  methods: {
+    resetGame() {
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Would you like to reset current game and start new one?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.$router.push("/");
+      })
+    }
+  }
 }
 </script>
 
