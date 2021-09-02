@@ -1,6 +1,6 @@
 {
   "name": "islands",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Steampunk roguelike game",
   "productName": "Islands in the Void",
   "author": "Andrew Abramov <stinger911@gmail.com>",
@@ -10,7 +10,7 @@
     "build": "npx quasar build",
     "lint": "eslint --ext .js,.vue ./",
     "lint-fix": "eslint --fix --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0",
+    "test": "jest",
     "pre-commit": "npm run lint-fix && npm --no-git-tag-version version patch && git add package*.json"
   },
   "dependencies": {
@@ -19,15 +19,20 @@
     "quasar": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.0",
     "@babel/eslint-parser": "^7.13.14",
+    "@babel/plugin-transform-modules-commonjs": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
     "@quasar/app": "^3.0.0",
     "@quasar/icongenie": "^2.4.0",
+    "babel-jest": "^27.1.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^7.0.0",
     "eslint-webpack-plugin": "^2.4.0",
-    "vue": "3.2.4",
-    "seedrandom": "^3.0.5"
+    "jest": "^27.1.0",
+    "seedrandom": "^3.0.5",
+    "vue": "3.2.4"
   },
   "browserslist": [
     "last 10 Chrome versions",
