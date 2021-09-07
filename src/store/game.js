@@ -56,8 +56,7 @@ export function makeGame(seed = null) {
         }
         obs.push(i);
       }
-      obs = obs.slice(0, 2);
-      console.log(obs);
+      obs = obs.slice(0, 3);
       obs.forEach((i) => {
         placeBuilding(rng, planets[i].faces, planets[i].size, "o");
       });

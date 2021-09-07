@@ -18,6 +18,21 @@ export default function () {
   };
 }
 
+export const playerActions = {
+  moveLeft() {
+    doMove("left");
+  },
+  moveRight() {
+    doMove("right");
+  },
+  moveUp() {
+    doMove("up");
+  },
+  moveDown() {
+    doMove("down");
+  },
+};
+
 function doMove(dir) {
   const nt = findAdjacentTile(store.state.player.location, dir);
   if (
