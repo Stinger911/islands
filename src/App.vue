@@ -2,13 +2,13 @@
   <router-view />
 </template>
 <script>
-import { defineComponent } from 'vue';
+  import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: 'App',
-  mounted() {
-    this.$q.dark.set(true);
-    //this.$q.fullscreen.request()
-  }
-})
+  export default defineComponent({
+    name: "App",
+    mounted() {
+      this.$q.dark.set(true);
+      //this.$q.fullscreen.request()
+    },
+  });
 </script>

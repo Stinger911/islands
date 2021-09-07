@@ -1,6 +1,6 @@
 {
   "name": "islands",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Steampunk roguelike game",
   "productName": "Islands in the Void",
   "author": "Andrew Abramov <stinger911@gmail.com>",
@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "quasar dev",
     "build": "npx quasar build",
-    "lint": "eslint --ext .js,.vue ./",
-    "lint-fix": "eslint --fix --ext .js,.vue ./",
+    "lint": "prettier -c ./; eslint --ext .js,.vue ./",
+    "lint-fix": "prettier -w ./; eslint --fix --ext .js,.vue ./",
     "test": "jest",
     "pre-commit": "npm run lint-fix && npm --no-git-tag-version version patch && git add package*.json"
   },
@@ -31,6 +31,8 @@
     "eslint-plugin-vue": "^7.0.0",
     "eslint-webpack-plugin": "^2.4.0",
     "jest": "^27.1.0",
+    "pouchdb": "^7.2.2",
+    "prettier": "^2.3.2",
     "seedrandom": "^3.0.5",
     "vue": "3.2.4"
   },

@@ -1,19 +1,19 @@
 import seedrandom from "seedrandom";
-import {
-  makePlanet
-} from "src/store/planet";
+import { makePlanet, placeBuilding } from "src/store/planet";
 
 const planetTypes = ["grass", "desert", "lava", "ocean", "snow"];
 
-export function makeGame() {
-  const seed = "15"; // Date.now();
+export function makeGame(seed = null) {
+  if (seed == null) {
+    seed = Date.now();
+  }
   const rng = seedrandom(seed, {
-    state: true
+    state: true,
   });
   const home = {
     x: Math.round(rng() * 1000 - 500),
-    y: Math.round(rng() * 1000 - 500)
-  }
+    y: Math.round(rng() * 1000 - 500),
+  };
 
   return {
     seed,
@@ -21,34 +21,16 @@ export function makeGame() {
     home,
     primes: [17, 29, 23, 19],
     patches: [],
-    makeName(rng = null) {
-      if (rng == null) {
-        rng = this.rng;
-      }
-      const digrams =
-        "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
-      let pName = "";
-      let x = 0;
-      const size = rng() < 0.15 ? 2 : rng() < 0.5 ? 3 : 4;
-      for (let i = 0; i < size; i++) {
-        x = Math.floor(rng() * 43) * 2;
-        pName += digrams[x];
-        if (digrams[x + 1] !== "?") {
-          pName += digrams[x + 1];
-        }
-      }
-      return pName.charAt(0) + pName.slice(1).toLowerCase()
-    },
     getSystem(x, y) {
       const px = x >= 0 ? this.primes[0] : this.primes[2];
       const py = y >= 0 ? this.primes[1] : this.primes[3];
       const sysSeed = x * px + y * py + this.seed;
       const sysRNG = seedrandom(sysSeed, {
-        state: true
+        state: true,
       });
-      const name = this.makeName(sysRNG)
+      const name = makeName(sysRNG);
       const planets = [];
-      const mp = Math.floor(sysRNG() * 4) + 2;
+      const mp = Math.floor(sysRNG() * 4) + 3;
       for (let p = 0; p < mp; p++) {
         let ps = {};
         if (p === 0) {
@@ -61,14 +43,51 @@ export function makeGame() {
         ps.type = planetTypes[Math.floor(sysRNG() * planetTypes.length)];
         planets.push(ps);
       }
+      // create observing points
+      let obs = [];
+      for (let p = 0; p < mp; p++) {
+        let i = Math.floor(rng() * mp);
+        while (
+          obs.findIndex((v) => {
+            return v == i;
+          }) != -1
+        ) {
+          i = Math.floor(rng() * mp);
+        }
+        obs.push(i);
+      }
+      obs = obs.slice(0, 2);
+      console.log(obs);
+      obs.forEach((i) => {
+        placeBuilding(rng, planets[i].faces, planets[i].size, "o");
+      });
       return {
         name,
         planets,
         cx: x + sysRNG() - 0.5,
         cy: y + sysRNG() - 0.5,
-      }
+      };
     },
+  };
+}
+
+export function makeName(rng = null) {
+  if (rng == null) {
+    rng = Math.random;
   }
+  const digrams =
+    "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
+  let pName = "";
+  let x = 0;
+  const size = rng() < 0.15 ? 2 : rng() < 0.5 ? 3 : 4;
+  for (let i = 0; i < size; i++) {
+    x = Math.floor(rng() * 43) * 2;
+    pName += digrams[x];
+    if (digrams[x + 1] !== "?") {
+      pName += digrams[x + 1];
+    }
+  }
+  return pName.charAt(0) + pName.slice(1).toLowerCase();
 }
 
 export function romanize(num) {
@@ -89,7 +108,7 @@ export function romanize(num) {
     ["I", 1],
   ];
   let roman = "";
-  lookup.forEach(i => {
+  lookup.forEach((i) => {
     while (num >= i[1]) {
       roman += i[0];
       num -= i[1];

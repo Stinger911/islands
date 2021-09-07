@@ -5,10 +5,10 @@ export function makePlanet(sz, rng = null) {
   const fc = [];
   for (let f = 0; f < 6; f++) {
     const fx = [];
-    const X = fillPlane(sz, .15, rng, .3, .2);
-    const T = fillPlane(sz, .3, rng, .3, .8);
-    const G = fillPlane(sz, .3, rng, .8, .8);
-    const W = fillPlane(sz, .1, rng, .2, .2);
+    const X = fillPlane(sz, 0.15, rng, 0.3, 0.3);
+    const T = fillPlane(sz, 0.3, rng, 0.3, 0.8);
+    const G = fillPlane(sz, 0.3, rng, 0.8, 0.8);
+    const W = fillPlane(sz, 0.1, rng, 0.2, 0.2);
     for (let r = 0; r < sz; r++) {
       let rw = "";
       for (let c = 0; c < sz; c++) {
@@ -31,11 +31,42 @@ export function makePlanet(sz, rng = null) {
     }
     fc.push(fx);
   }
+  // place settlements: 1 for size=5 to 5 for size=9
+  for (let i = 0; i < sz - 4; i++) {
+    placeBuilding(rng, fc, sz, "S", true);
+  }
+  // place beacon
+
+  placeBuilding(rng, fc, sz, "B");
+
   return {
     name: "Random Planet",
     size: sz,
     type: "grass",
     faces: fc,
+  };
+}
+
+export function placeBuilding(rng, fc, sz, bld, one_per_face = false) {
+  let notReady = true;
+  while (notReady) {
+    const face = Math.floor(rng() * 6);
+    const row = Math.floor(rng() * sz);
+    const col = Math.floor(rng() * sz);
+    const pos = fc[face][row][col];
+    if (one_per_face) {
+      const idx = fc[face].reduce((p, c, i) => {
+        const e = fc[face][i].indexOf(bld);
+        return e > p ? e : p;
+      }, -1);
+      if (idx > -1) {
+        continue;
+      }
+    }
+    if (pos != "X" && pos != "w" && pos != "S" && pos != "B" && pos != "o") {
+      fc[face][row] = fc[face][row].replaceAt(col, bld);
+      notReady = false;
+    }
   }
 }
 
@@ -50,7 +81,7 @@ export function fillPlane(sz, load, rng = null, style = 0.5, density = 0.5) {
   if (rng == null) {
     rng = Math.random;
   }
-  let leftover = Math.floor(sz * sz * (load + (rng() * load / 10))); // 10% variations of load
+  let leftover = Math.floor(sz * sz * (load + (rng() * load) / 10)); // 10% variations of load
   let x = Math.floor(rng() * sz);
   let y = Math.floor(rng() * sz);
   let ld = -1; // last direstion not defined yet
@@ -61,8 +92,9 @@ export function fillPlane(sz, load, rng = null, style = 0.5, density = 0.5) {
     leftover -= 1;
     let local_style = rng();
     if (ld === -1 || local_style < style) {
-      let nd = Math.floor(rng() * 4)
-      if (local_style < style && nd == ld) { // force change direction
+      let nd = Math.floor(rng() * 4);
+      if (local_style < style && nd == ld) {
+        // force change direction
         nd = (nd + 1) % 4;
       }
       ld = nd;
@@ -96,31 +128,31 @@ export function fillPlane(sz, load, rng = null, style = 0.5, density = 0.5) {
   return plane;
 }
 
-String.prototype.replaceAt = function(index, replacement) {
-    return this.substr(0, index) + replacement + this.substr(index + replacement.length);
-}
+String.prototype.replaceAt = function (index, replacement) {
+  return (
+    this.substr(0, index) +
+    replacement +
+    this.substr(index + replacement.length)
+  );
+};
 
 function movePoint(x, y, sz, d) {
   switch (d) {
     case 0:
       y = y - 1;
-      if (y < 0)
-        y = sz - 1;
+      if (y < 0) y = sz - 1;
       break;
     case 1:
       x = x + 1;
-      if (x == sz)
-        x = 0;
+      if (x == sz) x = 0;
       break;
     case 2:
       y = y + 1;
-      if (y == sz)
-        y = 0;
+      if (y == sz) y = 0;
       break;
     case 3:
       x = x - 1;
-      if (x < 0)
-        x = sz - 1;
+      if (x < 0) x = sz - 1;
       break;
   }
   return [x, y];
