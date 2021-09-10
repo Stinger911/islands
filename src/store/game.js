@@ -1,5 +1,13 @@
 import seedrandom from "seedrandom";
-import { makePlanet, placeBuilding } from "src/store/planet";
+import { makePlanet, placeBuilding } from "./planet";
+
+/*
+ * Game Alphabet
+ *
+ * X - moutains (walls)   T - forest      g - bush
+ * w - water (flows)      B - beacon      S - settlement
+ * o - observing points
+ */
 
 const planetTypes = ["grass", "desert", "lava", "ocean", "snow"];
 

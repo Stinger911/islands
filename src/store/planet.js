@@ -1,3 +1,6 @@
+import { replaceAt } from "./constants";
+import { placeEnemies, placeEntity } from "./entities";
+
 export function makePlanet(sz, rng = null) {
   if (rng == null) {
     rng = Math.random;
@@ -36,15 +39,29 @@ export function makePlanet(sz, rng = null) {
     placeBuilding(rng, fc, sz, "S", true);
   }
   // place beacon
-
   placeBuilding(rng, fc, sz, "B");
 
-  return {
+  const planet = {
     name: "Random Planet",
     size: sz,
     type: "grass",
     faces: fc,
+    entities: [],
   };
+
+  // place resources
+  let count = Math.round((rng() * sz) / 3);
+  for (let i = 0; i < count; i++) {
+    placeEntity(rng, planet, "WRC");
+  }
+  count = Math.round(rng() * sz);
+  for (let i = 0; i < count; i++) {
+    placeEntity(rng, planet, "RES", { class: "WRC" });
+  }
+  // place enemies
+  placeEnemies(rng, planet);
+
+  return planet;
 }
 
 export function placeBuilding(rng, fc, sz, bld, one_per_face = false) {
@@ -64,7 +81,7 @@ export function placeBuilding(rng, fc, sz, bld, one_per_face = false) {
       }
     }
     if (pos != "X" && pos != "w" && pos != "S" && pos != "B" && pos != "o") {
-      fc[face][row] = fc[face][row].replaceAt(col, bld);
+      fc[face][row] = replaceAt(fc[face][row], col, bld);
       notReady = false;
     }
   }
@@ -88,7 +105,7 @@ export function fillPlane(sz, load, rng = null, style = 0.5, density = 0.5) {
 
   while (leftover > 0) {
     // set point
-    plane[y] = plane[y].replaceAt(x, ".");
+    plane[y] = replaceAt(plane[y], x, ".");
     leftover -= 1;
     let local_style = rng();
     if (ld === -1 || local_style < style) {
@@ -127,14 +144,6 @@ export function fillPlane(sz, load, rng = null, style = 0.5, density = 0.5) {
   }
   return plane;
 }
-
-String.prototype.replaceAt = function (index, replacement) {
-  return (
-    this.substr(0, index) +
-    replacement +
-    this.substr(index + replacement.length)
-  );
-};
 
 function movePoint(x, y, sz, d) {
   switch (d) {

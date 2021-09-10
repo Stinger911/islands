@@ -9,6 +9,13 @@ Visual representation inspired by [PipQuest](https://github.com/gregorterrill/d6
 
 Rest of graphics was found in the Google or Pinterest and may be subject of copyright, sorry.
 
+# Development agreements
+
+- We MUST use [GitHub Flow](https://guides.github.com/introduction/flow/) as project's workflow.
+- Minor version SHOULD be incremented before PR to master. Exception is the bug-fixing PRs.
+- Development branches MAY be used to collect planned releases containing multiple features
+- Code MUST be linted and prettified before commit
+
 ## Install the dependencies
 
 ```bash

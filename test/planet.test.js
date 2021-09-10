@@ -1,4 +1,7 @@
 import seedrandom from "seedrandom";
+import "../src/store/store";
+import "../src/store/entities";
+import { placeEntity } from "../src/store/entities";
 import { fillPlane, makePlanet } from "../src/store/planet";
 
 describe("Planet Generation Tests", () => {
@@ -68,5 +71,14 @@ describe("Planet Generation Tests", () => {
       out = out + pad + planet.faces[1][r] + "\n";
     }
     console.log(out);
+  });
+
+  it("Place entity", () => {
+    const sz = 5;
+    const planet = makePlanet(sz, rng);
+    planet.entities = [];
+    placeEntity(rng, planet, "RES-WRC");
+    expect(planet.entities.length).toBe(1);
+    console.log(planet.entities[0]);
   });
 });

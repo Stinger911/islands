@@ -25,6 +25,7 @@
 <script>
   import { defineComponent } from "vue";
   import store from "src/store/store";
+  import { playerEntity } from "src/store/entities";
 
   const faceNames = ["front", "bottom", "right", "left", "top", "back"];
 
@@ -85,8 +86,18 @@
         const entities = [];
         const loc = store.state.player.location;
         const fn = faceNames.indexOf(this.face);
+        if (store.state.planet.entities) {
+          store.state.planet.entities.forEach((v) => {
+            if (ci - 1 === v.loc.c && ri - 1 === v.loc.r && fn === v.loc.f) {
+              entities.push(v);
+            }
+          });
+        }
+        // last one (to be on top of stack)
         if (ci - 1 === loc.col && ri - 1 === loc.row && fn === loc.face) {
-          entities.push("@");
+          entities.push(
+            playerEntity(store.state.player.location, store.state.player.dir)
+          );
         }
         return entities;
       },
@@ -122,9 +133,13 @@
         return tc;
       },
       entityClass(e) {
-        switch (e) {
-          case "@":
-            return "player ent-zeppel-" + store.state.player.dir;
+        switch (e.sprite) {
+          case "PLR":
+            return "player ent-zeppel-" + e.loc.d;
+          case "EGL":
+            return "enemy ent-eagle-" + e.loc.d;
+          case "WRC":
+            return "ent-shipwreck";
         }
       },
     },
@@ -142,18 +157,26 @@
     text-shadow: none;
     text-align: center;
   }
+  .tile {
+    position: relative;
+  }
   .entity {
     height: 100%;
     align-items: center;
     justify-content: center;
     display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
   }
   .entity-img {
     background-image: url("../../public/img/entities.png");
     background-size: 800%; /* 8x8 sprites */
     position: absolute;
-    width: 10%;
-    height: 10%;
+    width: 100%;
+    height: 100%;
   }
   .glow {
     width: 1px;
@@ -162,25 +185,54 @@
   .player > .glow {
     box-shadow: 0 0 20px 11px cyan;
   }
-  .ent-zeppel-right > .entity-img {
+  .enemy > .glow {
+    box-shadow: 0 0 20px 11px rgb(255, 81, 0);
+  }
+  /* 
+   * Entities
+   */
+  .ent-zeppel-1 > .entity-img {
     background-position-y: 0;
     background-position-x: 0;
   }
-  .ent-zeppel-down > .entity-img {
+  .ent-zeppel-2 > .entity-img {
     background-position-y: 0;
     background-position-x: -300%;
   }
-  .ent-zeppel-left > .entity-img {
+  .ent-zeppel-3 > .entity-img {
     background-position-y: 0;
     background-position-x: -200%;
   }
-  .ent-zeppel-up > .entity-img {
+  .ent-zeppel-0 > .entity-img {
     background-position-y: 0;
     background-position-x: -100%;
   }
+  .ent-shipwreck > .entity-img {
+    background-position-y: 0;
+    background-position-x: -400%;
+  }
+  .ent-eagle-1 > .entity-img {
+    background-position-y: -100%;
+    background-position-x: 0;
+  }
+  .ent-eagle-2 > .entity-img {
+    background-position-y: -100%;
+    background-position-x: -300%;
+  }
+  .ent-eagle-3 > .entity-img {
+    background-position-y: -100%;
+    background-position-x: -200%;
+  }
+  .ent-eagle-0 > .entity-img {
+    background-position-y: -100%;
+    background-position-x: -100%;
+  }
+  /*
+   * CUBE TILES 
+   */
   .cube-tile-set {
     background-image: url("../../public/img/tileset.png");
-    background-size: 800%; /* 8x(5+3) tiles */
+    background-size: 800%; /* 8x(5+3 empty rows) tiles */
   }
   .cube-tile-set-grass {
     background-position-y: 0;

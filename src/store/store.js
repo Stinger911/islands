@@ -1,6 +1,6 @@
 import { reactive } from "vue";
-import player, { playerActions } from "src/store/player";
-import { makePlanet } from "src/store/planet";
+import player, { playerActions } from "./player";
+import { makePlanet } from "./planet";
 
 const defaultPlanet = makePlanet(9);
 
