@@ -12,14 +12,14 @@
         4   1   3   6
             2
       -->
-      <CubeFace face="front" :tiles="planet.faces[0]" :space-size="cubeSize" />
-      <CubeFace face="back" :tiles="planet.faces[5]" :space-size="cubeSize" />
+      <div id="front" class="face" :style="faceStyle('front')" />
+      <div id="back" class="face" :style="faceStyle('back')" />
 
-      <CubeFace face="left" :tiles="planet.faces[3]" :space-size="cubeSize" />
-      <CubeFace face="right" :tiles="planet.faces[2]" :space-size="cubeSize" />
+      <div id="left" class="face" :style="faceStyle('left')" />
+      <div id="right" class="face" :style="faceStyle('right')" />
 
-      <CubeFace face="top" :tiles="planet.faces[4]" :space-size="cubeSize" />
-      <CubeFace face="bottom" :tiles="planet.faces[1]" :space-size="cubeSize" />
+      <div id="top" class="face" :style="faceStyle('top')" />
+      <div id="bottom" class="face" :style="faceStyle('bottom')" />
     </div>
   </div>
   <q-dialog v-model="statsDlg" seamless position="bottom">
@@ -44,12 +44,11 @@
 
 <script>
   import { defineComponent, ref } from "vue";
-  import CubeFace from "components/CubeFace";
   import store from "src/store/store";
+  import stage from "src/pixi/stage";
 
   export default defineComponent({
     name: "Cube",
-    components: { CubeFace },
     setup() {
       let sz = window.innerHeight - 100;
       if (window.innerWidth < sz) sz = window.innerWidth;
@@ -62,7 +61,8 @@
         size,
         currentFace: ref(0),
         dieRotation: ref({ x: 0, y: 0, z: 0 }),
-        cubeSize: ref(sz * 7),
+        cubeSize: ref(Math.floor(sz * store.state.planet.size * 0.66)),
+        pixi: ref(null),
       };
     },
     computed: {
@@ -99,6 +99,25 @@
     },
     mounted() {
       window.addEventListener("keyup", this.handleKeyPress);
+      store.state.pixi = stage(store.state.planet);
+      store.state.pixi.addEntity(
+        "@",
+        "player",
+        store.state.player.location.face,
+        store.state.player.location.row,
+        store.state.player.location.col
+      );
+      // console.log(store.state.planet.entities);
+      store.state.planet.entities.forEach((v, i) => {
+        const tag = `${i}-${v.sprite}`;
+        store.state.pixi.addEntity(
+          tag,
+          v.sprite,
+          v.loc.face,
+          v.loc.row,
+          v.loc.col
+        );
+      });
     },
     beforeUnmount() {
       window.removeEventListener("keyup", this.handleKeyPress);
@@ -120,6 +139,24 @@
         );
         return style.join("; ");
       },
+      faceStyle(face) {
+        const rtz = Math.floor(this.cubeSize / 2);
+        const szs = `width: ${this.cubeSize}px; height: ${this.cubeSize}px`;
+        switch (face) {
+          case "front": // 0
+            return `${szs}; transform: translateZ(${rtz}px)`;
+          case "back": // 5
+            return `${szs}; transform: rotateY(180deg) rotateZ(180deg) translateZ(${rtz}px)`;
+          case "right": // 2
+            return `${szs}; transform: rotateY(90deg) rotateZ(-90deg) translateZ(${rtz}px)`;
+          case "left": // 3
+            return `${szs}; transform: rotateY(-90deg) rotateZ(-90deg) translateZ(${rtz}px)`;
+          case "top": // 4
+            return `${szs}; transform: rotateX(90deg) rotateZ(90deg) translateZ(${rtz}px)`;
+          case "bottom": // 1
+            return `${szs}; transform: rotateX(-90deg) rotateZ(-90deg) translateZ(${rtz}px)`;
+        }
+      },
       closeStats() {
         store.setStatsVisibility(false);
       },
@@ -127,7 +164,7 @@
         switch (e.keyCode) {
           case 32: // space
           case 13: // enter
-            console.log("Call action");
+            store.playerActions.doAction();
             break;
           case 73: //i
             store.setStatsVisibility(!store.state.showStats);
@@ -292,5 +329,15 @@
     position: absolute;
     transform-style: preserve-3d;
     transition: transform 1s;
+  }
+  .face {
+    /*border: 1px solid #222;*/
+    display: block;
+    position: absolute;
+    background-color: transparent;
+    font-size: 6em;
+    color: #000;
+    text-shadow: none;
+    text-align: center;
   }
 </style>

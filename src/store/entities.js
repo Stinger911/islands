@@ -1,4 +1,4 @@
-import { MOVE_LEFT, MOVE_NONE } from "./constants";
+import { MOVE_LEFT, MOVE_NONE, findAdjacentTile } from "./constants";
 import { makeName } from "./game";
 
 /**
@@ -33,7 +33,39 @@ const TEMPLATES = [
     class: "ENM",
     sprite: "EGL", // code name for CubeFace render
     name: "wild electrical eagle",
-    movement: MOVE_NONE,
+    movement: function (planet, rng = null) {
+      if (rng == null) {
+        rng = Math.random;
+      }
+      let dir = this.loc.dir;
+      const mv = rng();
+      if (mv > 0.5 && mv <= 0.7) {
+        dir -= 1;
+      }
+      if (mv > 0.7 && mv <= 0.9) {
+        dir += 1;
+      }
+      if (mv > 0.9) {
+        return; // no move
+      }
+      if (dir < 0) {
+        dir += 4;
+      }
+      if (dir > 3) {
+        dir -= 4;
+      }
+      const nt = findAdjacentTile(planet.size, this.loc, dir);
+      const np = planet.faces[nt.tile.face][nt.tile.row][nt.tile.col];
+      if (this.restricted.indexOf(np) > -1) {
+        return;
+      }
+      this.loc = {
+        ...nt.tile,
+        dir: nt.newDirection,
+      };
+
+      return this.loc;
+    },
     initial_dir: MOVE_LEFT,
     one_per_face: false,
     restricted: "XSow", // can't place on these terrains
@@ -64,17 +96,20 @@ export function placeEntity(rng, planet, cls, overrides = {}) {
   let place = false;
   while (!place) {
     place = {
-      f: Math.floor(rng() * 6),
-      r: Math.floor(rng() * planet.size),
-      c: Math.floor(rng() * planet.size),
-      d: MOVE_NONE,
+      face: Math.floor(rng() * 6),
+      row: Math.floor(rng() * planet.size),
+      col: Math.floor(rng() * planet.size),
+      dir: MOVE_NONE,
     };
-    if (def.restricted.indexOf(planet.faces[place.f][place.r][place.c]) > -1) {
+    if (
+      def.restricted.indexOf(planet.faces[place.face][place.row][place.col]) >
+      -1
+    ) {
       place = false;
     }
     // ToDO: pay attention `one_per_face` property
   }
-  place.d = def.initial_dir;
+  place.dir = def.initial_dir;
   def.loc = place;
 
   planet.entities.push(def);

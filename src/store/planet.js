@@ -52,12 +52,12 @@ export function makePlanet(sz, rng = null) {
   // place resources
   let count = Math.round((rng() * sz) / 3);
   for (let i = 0; i < count; i++) {
-    placeEntity(rng, planet, "WRC");
+    placeEntity(rng, planet, "RES-WRC");
   }
-  count = Math.round(rng() * sz);
-  for (let i = 0; i < count; i++) {
-    placeEntity(rng, planet, "RES", { class: "WRC" });
-  }
+  // count = Math.round(rng() * sz);
+  // for (let i = 0; i < count; i++) {
+  //   placeEntity(rng, planet, "RES", { class: "WRC" });
+  // }
   // place enemies
   placeEnemies(rng, planet);
 

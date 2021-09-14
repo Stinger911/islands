@@ -18,12 +18,16 @@
   import { defineComponent } from "vue";
   import GameFooter from "components/footer";
   import GameHeader from "components/header";
+  import { PixiLoadResources } from "src/pixi/stage";
 
   export default defineComponent({
     name: "MainLayout",
     components: { GameHeader, GameFooter },
     setup() {
       return {};
+    },
+    mounted() {
+      PixiLoadResources();
     },
   });
 </script>

@@ -7,7 +7,7 @@
       </q-tooltip>
     </q-btn>
     <q-space />
-    <q-btn outline icon="group_work">
+    <q-btn outline icon="group_work" @click="doAction()">
       <q-tooltip>
         <b>Action</b><br />
         Keys: <b>SPACE</b>, <b>ENTER</b>
@@ -63,6 +63,9 @@
       },
       moveDown() {
         store.playerActions.moveDown();
+      },
+      doAction() {
+        store.playerActions.doAction();
       },
     },
   });

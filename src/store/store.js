@@ -10,6 +10,7 @@ const store = {
     player: player(),
     game: {},
     planet: defaultPlanet,
+    pixi: null,
   }),
   setStatsVisibility,
   playerActions,
