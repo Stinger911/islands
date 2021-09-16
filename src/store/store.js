@@ -7,6 +7,11 @@ const defaultPlanet = makePlanet(9);
 const store = {
   state: reactive({
     showStats: false,
+    showBeacon: false,
+    showCity: false,
+    showObserve: false,
+    inFight: false,
+    inGather: false,
     player: player(),
     game: {},
     planet: defaultPlanet,

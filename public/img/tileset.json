@@ -65,7 +65,7 @@
       "pivot": { "x": 0.5, "y": 0.5 }
     },
     "desert-open": {
-      "frame": { "x": 0, "y": 0, "w": 64, "h": 64 },
+      "frame": { "x": 0, "y": 64, "w": 64, "h": 64 },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },

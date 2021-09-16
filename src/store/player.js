@@ -41,7 +41,35 @@ export const playerActions = {
   },
   doAction() {
     console.log("Call action");
-    console.log(store.state.planet.entities);
+    const pos = store.state.player.location;
+    // TODO: chaeck for collision with entities
+    const ent = store.state.planet.entities.filter((v, i) => {
+      return (
+        v.loc.face == pos.face && v.loc.row == pos.row && v.loc.col == pos.col
+      );
+    });
+    if (ent.length > 0) {
+      console.log("Collided: ", ent);
+      let enemies = ent.find((v) => {
+        return v.class === "ENM";
+      });
+      if (enemies) store.state.inFight = ent;
+      else store.state.inGather = ent;
+      return;
+    }
+    // Check terrain objects
+    const terr = store.state.planet.faces[pos.face][pos.row][pos.col];
+    switch (terr) {
+      case "B":
+        store.state.showBeacon = true;
+        break;
+      case "S":
+        store.state.showCity = true;
+        break;
+      case "o":
+        store.state.showObserve = true;
+        break;
+    }
   },
 };
 

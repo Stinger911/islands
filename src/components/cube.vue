@@ -40,15 +40,26 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+  <beacon-dlg v-model="beaconDlg" />
+  <city-dlg v-model="cityDlg" />
+  <observe-dlg v-model="observeDlg" />
+  <fight-dlg v-model="showArena" />
+  <gathering-dlg v-model="showResources" />
 </template>
 
 <script>
   import { defineComponent, ref } from "vue";
   import store from "src/store/store";
   import stage from "src/pixi/stage";
+  import BeaconDlg from "src/components/BeaconDlg";
+  import CityDlg from "./CityDlg.vue";
+  import ObserveDlg from "./ObserveDlg.vue";
+  import FightDlg from "./FightDlg.vue";
+  import GatheringDlg from "./GatheringDlg.vue";
 
   export default defineComponent({
     name: "Cube",
+    components: { BeaconDlg, CityDlg, ObserveDlg, FightDlg, GatheringDlg },
     setup() {
       let sz = window.innerHeight - 100;
       if (window.innerWidth < sz) sz = window.innerWidth;
@@ -68,6 +79,21 @@
     computed: {
       statsDlg() {
         return store.state.showStats;
+      },
+      beaconDlg() {
+        return store.state.showBeacon;
+      },
+      cityDlg() {
+        return store.state.showCity;
+      },
+      observeDlg() {
+        return store.state.showObserve;
+      },
+      showArena() {
+        return store.state.inFight != false;
+      },
+      showResources() {
+        return store.state.inGather != false;
       },
       adjustedDieRotation() {
         let rotation = { ...this.dieRotation };
