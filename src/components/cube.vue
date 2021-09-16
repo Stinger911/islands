@@ -22,24 +22,7 @@
       <div id="bottom" class="face" :style="faceStyle('bottom')" />
     </div>
   </div>
-  <q-dialog v-model="statsDlg" seamless position="bottom">
-    <q-card style="width: 350px; position: absolute; left: 20px; bottom: 70px">
-      <h6 class="q-ma-xs">On {{ planet.name }}</h6>
-
-      <q-card-section class="row items-center no-wrap">
-        <div>
-          <div class="text-weight-bold">The Walker</div>
-          <div class="text-grey">Fitz & The Tantrums</div>
-        </div>
-
-        <q-space />
-
-        <q-btn flat round icon="play_arrow" />
-        <q-btn flat round icon="pause" />
-        <q-btn flat round icon="close" @click="closeStats()" />
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+  <stats-dlg v-model="statsDlg" />
   <beacon-dlg v-model="beaconDlg" />
   <city-dlg v-model="cityDlg" />
   <observe-dlg v-model="observeDlg" />
@@ -56,10 +39,18 @@
   import ObserveDlg from "./ObserveDlg.vue";
   import FightDlg from "./FightDlg.vue";
   import GatheringDlg from "./GatheringDlg.vue";
+  import StatsDlg from "./StatsDlg.vue";
 
   export default defineComponent({
     name: "Cube",
-    components: { BeaconDlg, CityDlg, ObserveDlg, FightDlg, GatheringDlg },
+    components: {
+      BeaconDlg,
+      CityDlg,
+      ObserveDlg,
+      FightDlg,
+      GatheringDlg,
+      StatsDlg,
+    },
     setup() {
       let sz = window.innerHeight - 100;
       if (window.innerWidth < sz) sz = window.innerWidth;

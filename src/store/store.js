@@ -28,6 +28,5 @@ const store = {
 export default store;
 
 function setStatsVisibility(param) {
-  console.log(param);
   store.state.showStats = param;
 }
