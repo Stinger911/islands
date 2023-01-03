@@ -13,6 +13,18 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 const { configure } = require("quasar/wrappers");
 
 module.exports = configure(function (ctx) {
+  const appenv = ctx.dev
+    ? {
+        // so on dev we'll have
+      }
+    : {
+        // and on build (production):
+      };
+
+  appenv["MAIN_BUILD_DATE"] = `"${new Date().toISOString()}"`;
+  appenv["MAIN_BUILD_GIT"] = `"${process.env.GITCOMMIT}"`;
+  appenv["PACKAGE_VERSION"] = require("./package.json").version;
+
   return {
     // https://v2.quasar.dev/quasar-cli-webpack/supporting-ts
     supportTS: false,
@@ -44,6 +56,7 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-build
     build: {
+      env: appenv,
       vueRouterMode: "hash", // available values: 'hash', 'history'
 
       // transpile: false,

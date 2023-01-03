@@ -1,20 +1,19 @@
 <template>
   <q-page class="flex flex-center">
-    <div id="gamediv">
-      <PhaserGame title="gamediv"></PhaserGame>
-    </div>
+    <div id="gamediv"></div>
   </q-page>
 </template>
 
 <script>
+import { createAssignmentExpression } from "@vue/compiler-core";
+import { CreateGame } from "../game/main";
 import { defineComponent } from "vue";
-import PhaserGame from "components/PhaserGame.vue";
 
 export default defineComponent({
   name: "GamePage",
 
-  components: {
-    PhaserGame,
+  mounted() {
+    CreateGame("gamediv");
   },
 
   setup() {

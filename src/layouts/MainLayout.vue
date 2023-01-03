@@ -22,9 +22,7 @@
     </q-page-container>
 
     <q-footer class="semi-trans-panel">
-      <q-toolbar>
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-      </q-toolbar>
+      <game-footer></game-footer>
     </q-footer>
   </q-layout>
 </template>
@@ -32,8 +30,10 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
+import GameFooter from "components/footer";
 
 export default defineComponent({
+  components: { GameFooter },
   name: "MainLayout",
 
   setup() {

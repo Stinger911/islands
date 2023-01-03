@@ -1,9 +1,3 @@
-<template>
-  <div></div>
-</template>
-
-<script>
-import { defineComponent } from "vue";
 import Phaser from "phaser";
 
 const config = {
@@ -23,9 +17,9 @@ const config = {
   },
   scene: {
     preload: function () {
-      this.load.image("sky", "/assets/space3.png");
-      this.load.image("logo", "/assets/logo.png");
-      this.load.image("red", "/assets/red.png");
+      this.load.image("sky", "assets/space3.png");
+      this.load.image("logo", "assets/logo.png");
+      this.load.image("red", "assets/red.png");
     },
     create: function () {
       this.add.image(400, 300, "sky");
@@ -49,18 +43,10 @@ const config = {
   },
 };
 
-export default defineComponent({
-  name: "PhaserGame",
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-  },
-  mounted() {
-    console.log(document.getElementById(this.title));
-    config.parent = this.title;
-    this.game = new Phaser.Game(config);
-  },
-});
-</script>
+export let Game = null;
+
+export const CreateGame = function (title) {
+  console.log(document.getElementById(title));
+  config.parent = title;
+  Game = new Phaser.Game(config);
+};
