@@ -1,6 +1,6 @@
 {
   "name": "islands",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Steampunk Idle Sandbox",
   "productName": "Islands in the Void",
   "author": "Andrew Abramov <stinger911@gmail.com>",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app-webpack": "^3.0.0",
+    "@quasar/icongenie": "^2.5.4",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",

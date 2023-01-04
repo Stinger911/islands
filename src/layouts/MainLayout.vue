@@ -6,7 +6,7 @@
           flat
           dense
           round
-          icon="menu"
+          icon="img:assets/icons/eagle-24.png"
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
