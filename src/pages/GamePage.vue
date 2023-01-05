@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import { createAssignmentExpression } from "@vue/compiler-core";
 import { CreateGame } from "../game/main";
 import { defineComponent } from "vue";
 

@@ -8,10 +8,28 @@
           round
           icon="img:assets/icons/eagle-24.png"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        >
+          <q-menu>
+            <q-list style="min-width: 200px">
+              <q-item v-close-popup clickable @click="aboutDlg()">
+                <q-item-section>About</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item
+                v-close-popup
+                clickable
+                class="text-negative"
+                @click="resetGame()"
+              >
+                <q-item-section>Log Out</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title>
+          {{ user.display }} at {{ userLocation }}
+        </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
@@ -31,6 +49,8 @@
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import GameFooter from "components/footer";
+import { useUserStore } from "../stores/user";
+import { useMainStore } from "../stores/main";
 
 export default defineComponent({
   components: { GameFooter },
@@ -39,27 +59,34 @@ export default defineComponent({
   setup() {
     const leftDrawerOpen = ref(false);
     const $q = useQuasar();
+    const user = useUserStore();
+    const main = useMainStore();
 
     $q.dark.set(true);
     return {
+      user: user,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      resetGame() {
+        $q.dialog({
+          title: "Confirm",
+          message:
+            "Would you like to log out from current game?" +
+            "If you logged locally and want to continue this game you should remember the name.",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          main.logged = false;
+          this.$router.push("/");
+        });
+      },
     };
+  },
+  computed: {
+    userLocation() {
+      return "{{VIOD}}";
+    },
   },
 });
 </script>
-
-<style scoped>
-.semi-trans-panel {
-  background-color: #00000020;
-  backdrop-filter: blur(6px);
-}
-.q-page-container {
-  padding-top: 0 !important;
-  height: 100vh;
-}
-.q-page-container main {
-  height: 100vh;
-}
-</style>

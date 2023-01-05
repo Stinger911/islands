@@ -1,6 +1,6 @@
 {
   "name": "islands",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Steampunk Idle Sandbox",
   "productName": "Islands in the Void",
   "author": "Andrew Abramov <stinger911@gmail.com>",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "core-js": "^3.6.5",
+    "pinia": "^2.0.28",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"
@@ -30,7 +31,8 @@
     "gh-pages": "^4.0.0",
     "phaser": "^3.55.2",
     "phaser3-rex-plugins": "^1.1.79",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "seedrandom": "^3.0.5"
   },
   "browserslist": [
     "last 10 Chrome versions",

@@ -1,1 +1,12 @@
 // app global css in SCSS form
+.semi-trans-panel {
+  background-color: #00000020;
+  backdrop-filter: blur(6px);
+}
+.q-page-container {
+  padding-top: 0 !important;
+  height: 100vh;
+}
+.q-page-container main {
+  height: 100vh;
+}

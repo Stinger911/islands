@@ -16,7 +16,7 @@ import routes from "./routes";
  * with the Router instance.
  */
 
-export default route(function (/* { store, ssrContext } */) {
+export default route(function ({ store /*, ssrContext */ }) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === "history"
@@ -34,6 +34,15 @@ export default route(function (/* { store, ssrContext } */) {
       process.env.MODE === "ssr" ? void 0 : process.env.VUE_ROUTER_BASE
     ),
   });
+
+  // Router.beforeEach((to, from, next) => {
+  //   console.log(to, from, store.getters);
+  //   if (to.path !== "/" && !store.getters.main.isLoggedIn) {
+  //     next({ name: "account-signin", query: { next: to.fullPath } });
+  //   } else {
+  //     next();
+  //   }
+  // });
 
   return Router;
 });

@@ -22,8 +22,6 @@ export default {
 
     const path = computed(() => route.path);
 
-    console.log(process.env.MAIN_BUILD_DATE, process.env.MAIN_BUILD_GIT);
-
     return {
       path,
       version: process.env.PACKAGE_VERSION,
