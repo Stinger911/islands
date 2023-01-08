@@ -28,10 +28,10 @@
         </q-btn>
 
         <q-toolbar-title>
-          {{ user.display }} at {{ userLocation }}
+          {{ user.display }} {{ userLocation }}
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>App v{{ version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -65,6 +65,7 @@ export default defineComponent({
     $q.dark.set(true);
     return {
       user: user,
+      version: process.env.PACKAGE_VERSION,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
@@ -85,7 +86,9 @@ export default defineComponent({
   },
   computed: {
     userLocation() {
-      return "{{VIOD}}";
+      const l = this.user.loc;
+      console.log(l);
+      return l.name();
     },
   },
 });

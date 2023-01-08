@@ -70,6 +70,7 @@ export default {
         const rng = seedrandom(this.text, { state: true });
         const user = useUserStore();
         const main = useMainStore();
+        user.newGame();
         user.display = this.text;
         user.key = rng();
         main.login();

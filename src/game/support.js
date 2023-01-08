@@ -43,3 +43,15 @@ export function romanize(num) {
   });
   return roman;
 }
+
+export function randint(rng, from, till) {
+  return Math.floor(rng() * (till - from) + from);
+}
+
+export function dice(rng, mul, sides) {
+  return Math.floor(mul * (randint(rng, 0, sides) + 1));
+}
+
+export function choice(rng, arr) {
+  return arr[randint(rng, 0, arr.length)];
+}
