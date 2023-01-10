@@ -4,6 +4,7 @@ export const useMainStore = defineStore("main", {
   state: () => ({
     logged: false,
     online: false,
+    scene: "",
   }),
 
   getters: {

@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <div id="gamediv"></div>
+    <div id="gamediv" @planet="onPlanet()"></div>
   </q-page>
 </template>
 
@@ -17,6 +17,12 @@ export default defineComponent({
 
   setup() {
     return {};
+  },
+
+  methods: {
+    onPlanet() {
+      alert("Planet!!!");
+    },
   },
 });
 </script>

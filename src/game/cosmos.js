@@ -84,11 +84,11 @@ export function makeSystem(rng) {
     } else if (m < 60) {
       obj.planets[p] = Planet(0, o, "b");
     } else if (m < 73) {
-      obj.planets[p] = Planet(4, o, choice(rng, "rrddddttta"));
+      obj.planets[p] = Planet(4, o, choice(rng, "rrddddtttw"));
     } else if (m < 82) {
-      obj.planets[p] = Planet(5, o, choice(rng, "rrddtttaaa"));
+      obj.planets[p] = Planet(5, o, choice(rng, "rrddtttwww"));
     } else if (m < 90) {
-      obj.planets[p] = Planet(6, o, choice(rng, "rdddttttaa"));
+      obj.planets[p] = Planet(6, o, choice(rng, "rdddttttww"));
     } else if (m < 96) {
       obj.planets[p] = Planet(7, o, choice(rng, "rrrddddttiiii"));
     } else {

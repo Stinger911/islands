@@ -20,7 +20,7 @@ export const useUserStore = defineStore("user", {
 
   getters: {
     loc(state) {
-      console.log(state);
+      // console.log(state);
       let star = state.home_name;
       return {
         segment: state.loc_segment,

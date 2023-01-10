@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh lpr lFf">
-    <q-header class="semi-trans-panel">
+    <q-header class="semi-trans-panel" :style="{ paddingLeft: headPad }">
       <q-toolbar>
         <q-btn
           flat
@@ -40,7 +40,7 @@
     </q-page-container>
 
     <q-footer class="semi-trans-panel">
-      <game-footer></game-footer>
+      <game-footer :space="wid"></game-footer>
     </q-footer>
   </q-layout>
 </template>
@@ -57,7 +57,6 @@ export default defineComponent({
   name: "MainLayout",
 
   setup() {
-    const leftDrawerOpen = ref(false);
     const $q = useQuasar();
     const user = useUserStore();
     const main = useMainStore();
@@ -65,10 +64,9 @@ export default defineComponent({
     $q.dark.set(true);
     return {
       user: user,
+      wid: ref(window.innerWidth),
+      headPad: ref("0px"),
       version: process.env.PACKAGE_VERSION,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
       resetGame() {
         $q.dialog({
           title: "Confirm",
@@ -84,11 +82,27 @@ export default defineComponent({
       },
     };
   },
+  mounted() {
+    window.addEventListener("resize", this.onResize);
+    this.onResize(window, null);
+  },
   computed: {
     userLocation() {
       const l = this.user.loc;
-      console.log(l);
+      // console.log(l);
       return l.name();
+    },
+  },
+  methods: {
+    onResize(win, evt) {
+      const aspect =
+        window.innerWidth -
+        Math.min(window.innerWidth / 800, window.innerHeight / 600) * 800;
+      if (!isNaN(aspect)) {
+        this.wid = Math.round(aspect);
+        this.headPad = "" + aspect / 2 + "px";
+      }
+      // console.log(this.wid);
     },
   },
 });
