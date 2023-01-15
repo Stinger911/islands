@@ -1,3 +1,4 @@
+import { Tetrahedron } from "./planetMap";
 import { randint, dice, choice } from "./support";
 
 export const STAR_COLOR = ["RED", "ORANGE", "YELLOW", "BLUE", "WHITE"];
@@ -13,6 +14,7 @@ export function Planet(mass, orbit, tr = "t") {
     mass: mass,
     orbit: orbit,
     terrain: tr,
+    map: null,
 
     str() {
       return "M: " + this.mass + "; O: " + this.orbit + "; T: " + this.terrain;
@@ -27,7 +29,7 @@ export function makeSystem(rng) {
     main: 0,
 
     str: function () {
-      console.log(this);
+      // console.log(this);
       return (
         "COLOR: " +
         STAR_COLOR[this.color] +
@@ -72,15 +74,20 @@ export function makeSystem(rng) {
       break;
     }
   }
+  let lastO = 0;
   for (let p = 0; p < obj.main; p++) {
-    let o = MAIN_ORBI[0][randint(rng, lm, hm - (obj.main - p))];
+    let o = -1;
+    while (o <= lastO) {
+      o = MAIN_ORBI[0][randint(rng, lm, hm - (obj.main - p))];
+    }
+    lastO = o;
     let m = randint(rng, 0, 100);
     if (m < 19) {
-      obj.planets[p] = Planet(1, o, choice(rng, "lr"));
+      obj.planets[p] = Planet(1, o, choice(rng, "llrrr"));
     } else if (m < 38) {
-      obj.planets[p] = Planet(2, o, choice(rng, "lrrrdddd"));
+      obj.planets[p] = Planet(2, o, choice(rng, "llrrrdddd"));
     } else if (m < 57) {
-      obj.planets[p] = Planet(3, o, choice(rng, "lrrrddddtt"));
+      obj.planets[p] = Planet(3, o, choice(rng, "llrrrddddtt"));
     } else if (m < 60) {
       obj.planets[p] = Planet(0, o, "b");
     } else if (m < 73) {
@@ -97,7 +104,7 @@ export function makeSystem(rng) {
   }
   // outer planets
   for (let p = obj.main + 1; p < obj.planets.length; p++) {
-    let o = obj.planets[p - 1].orbit * (1.3 + dice(rng, 1, 12) * 0.1);
+    let o = obj.planets[p - 1].orbit * (1.3 + dice(rng, 1, 12) * 0.01);
     o = Math.round(o * 10) / 10;
     let m = randint(rng, 0, 100);
     if (m < 32) {
@@ -125,6 +132,18 @@ export function makeSystem(rng) {
         choice(rng, [7, 8, 9]),
         o,
         choice(rng, "tttwtwiwiii")
+      );
+    }
+  }
+  // maps
+  for (let i = 0; i < obj.planets.length; i++) {
+    let sz = obj.planets[i].mass;
+    let tr = obj.planets[i].terrain;
+    if (sz > 0 && tr != "b") {
+      obj.planets[i].map = new Tetrahedron(
+        sz + 11,
+        tr,
+        randint(rng, 0, 1 << 24)
       );
     }
   }

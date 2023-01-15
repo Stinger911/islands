@@ -9,6 +9,14 @@ module.exports = (api) => {
           ? { targets: { node: "current" } }
           : {},
       ],
+      [
+        "@babel/preset-env",
+        {
+          targets: {
+            node: "current",
+          },
+        },
+      ],
     ],
   };
 };

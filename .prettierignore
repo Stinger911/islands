@@ -1,4 +1,5 @@
 dist/
 .quasar/
+coverage/
 
 *.template.html

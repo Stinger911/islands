@@ -55,3 +55,9 @@ export function dice(rng, mul, sides) {
 export function choice(rng, arr) {
   return arr[randint(rng, 0, arr.length)];
 }
+
+export function replaceAt(str, index, replacement) {
+  return (
+    str.substr(0, index) + replacement + str.substr(index + replacement.length)
+  );
+}
