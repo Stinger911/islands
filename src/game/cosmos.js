@@ -22,6 +22,11 @@ export function Planet(mass, orbit, tr = "t") {
   };
 }
 
+/**
+ *
+ * @param {object} rng random number generator
+ * @returns {object} generated system
+ */
 export function makeSystem(rng) {
   const obj = {
     color: randint(rng, 0, STAR_COLOR.length),

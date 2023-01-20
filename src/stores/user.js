@@ -16,6 +16,7 @@ export const useUserStore = defineStore("user", {
     loc_hex: -1,
     loc_bld: 0,
     rng: null,
+    ss: null,
   }),
 
   getters: {
@@ -40,6 +41,13 @@ export const useUserStore = defineStore("user", {
         },
       };
     },
+    planet(state) {
+      console.log(state.ss.planets[state.loc_planet]);
+      return {
+        name: state.home_name + " " + romanize(state.loc_planet + 1),
+        map: state.ss.planets[state.loc_planet].map,
+      };
+    },
     json(state) {
       let obj = { ...state };
       return JSON.stringify(obj);
@@ -50,30 +58,9 @@ export const useUserStore = defineStore("user", {
     newGame() {
       this.rng = seedrandom(Date.now());
       this.home_name = makeName();
-      const ss = makeSystem(seedrandom(70));
-      this.loc_planet = ss.main;
-      // DEBUG code below this line
-      window.mss = (s) => {
-        return makeSystem(seedrandom(s));
-      };
-      window.plook = (s) => {
-        for (let i = s; i < 1000000; i++) {
-          let ss = makeSystem(seedrandom(i));
-          let p = ss.planets[ss.main];
-          if (
-            (ss.color == 1 || ss.color == 2) &&
-            ss.main > 1 &&
-            ss.planets.length > 4 &&
-            ss.planets.length < 11 &&
-            p.mass > 7 &&
-            p.orbit > 1 &&
-            p.orbit < 4
-          ) {
-            console.log(i, ss.str(), ss);
-            break;
-          }
-        }
-      };
+      this.ss = makeSystem(seedrandom(70));
+      this.loc_planet = this.ss.main;
+      this.ss.planets[this.loc_planet].map.generate();
     },
   },
 });

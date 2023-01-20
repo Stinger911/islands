@@ -1,19 +1,24 @@
 import { defineStore } from "pinia";
+import seedrandom from "seedrandom";
+import { makeSystem } from "src/game/cosmos";
 
-export const useCounterStore = defineStore("counter", {
+export const useGameStore = defineStore("gameData", {
   state: () => ({
-    counter: 0,
+    starSys: null,
+    planet: null,
   }),
 
   getters: {
-    doubleCount(state) {
-      return state.counter * 2;
-    },
+    // doubleCount(state) {
+    //   return state.counter * 2;
+    // },
   },
 
   actions: {
-    increment() {
-      this.counter++;
+    makeSS(key) {
+      const rng = seedrandom(key);
+      this.starSys = makeSystem(rng);
+      this.planet = this.starSys.planets[this.starSys.main].map;
     },
   },
 });
