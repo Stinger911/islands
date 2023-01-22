@@ -5,18 +5,50 @@
       <q-btn outline label="0" @click="onZoomZero" />
       <q-btn outline label="+" @click="onZoomIn" />
     </q-btn-group>
-    <q-btn outline @click="onNext()" class="self-center">Enter Hangar</q-btn>
-    <div class="row">
-      <q-btn outline label="⬅️" class="self-center" @click="onMove5()" />
+    <q-btn @click="onNext()" class="self-center game-btn" flat
+      >Enter Hangar</q-btn
+    >
+    <div
+      class="row"
+      style="
+        background: url(./assets/images/btn_move.png);
+        background-size: 100% 100%;
+      "
+    >
+      <q-btn
+        label="⬅️"
+        flat
+        class="self-center btn-move"
+        style="padding-right: 0"
+        @click="onMove5()"
+      >
+        <q-tooltip>⬅️, A</q-tooltip>
+      </q-btn>
       <div class="column">
-        <q-btn outline label="↖️" @click="onMove6()" />
-        <q-btn outline label="↙️" @click="onMove4()" />
+        <q-btn label="↖️" flat @click="onMove6()" class="btn-move">
+          <q-tooltip>⬆️, W</q-tooltip>
+        </q-btn>
+        <q-btn label="↙️" flat @click="onMove4()" class="btn-move">
+          <q-tooltip>Z</q-tooltip>
+        </q-btn>
       </div>
       <div class="column">
-        <q-btn outline label="↗️" @click="onMove1()" />
-        <q-btn outline label="↘️" @click="onMove3()" />
+        <q-btn label="↗️" flat @click="onMove1()" class="btn-move">
+          <q-tooltip>E</q-tooltip>
+        </q-btn>
+        <q-btn label="↘️" flat @click="onMove3()" class="btn-move">
+          <q-tooltip>⬇️, X</q-tooltip>
+        </q-btn>
       </div>
-      <q-btn outline label="➡️" class="self-center" @click="onMove2()" />
+      <q-btn
+        label="➡️"
+        flat
+        class="self-center btn-move"
+        style="padding-left: 0"
+        @click="onMove2()"
+      >
+        <q-tooltip>➡️, D</q-tooltip>
+      </q-btn>
     </div>
   </div>
 </template>
@@ -61,3 +93,11 @@ export default {
   },
 };
 </script>
+
+<style>
+.btn-move {
+  height: 3em;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+</style>

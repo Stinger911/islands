@@ -1,6 +1,8 @@
 <template>
   <div class="fit row wrap justify-around items-start content-center">
-    <q-btn outline @click="onNext()" class="self-center">Leave Hangar</q-btn>
+    <q-btn outline @click="onNext()" class="self-center game-btn" flat
+      >Leave Hangar</q-btn
+    >
   </div>
 </template>
 

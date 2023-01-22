@@ -14,6 +14,9 @@
               <q-item v-close-popup clickable @click="aboutDlg()">
                 <q-item-section>About</q-item-section>
               </q-item>
+              <q-item v-close-popup clickable @click="saveGame()">
+                <q-item-section>Save</q-item-section>
+              </q-item>
               <q-separator />
               <q-item
                 v-close-popup
@@ -28,7 +31,7 @@
         </q-btn>
 
         <q-toolbar-title>
-          {{ user.display }} {{ userLocation }}
+          {{ game.userName }} {{ userLocation }}
         </q-toolbar-title>
 
         <div>App v{{ version }}</div>
@@ -49,8 +52,8 @@
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import GameFooter from "components/footer";
-import { useUserStore } from "../stores/user";
 import { useMainStore } from "../stores/main";
+import { useGameStore } from "src/stores/game";
 
 export default defineComponent({
   components: { GameFooter },
@@ -58,12 +61,12 @@ export default defineComponent({
 
   setup() {
     const $q = useQuasar();
-    const user = useUserStore();
+    const game = useGameStore();
     const main = useMainStore();
 
     $q.dark.set(true);
     return {
-      user: user,
+      game: game,
       wid: ref(window.innerWidth),
       headPad: ref("0px"),
       version: process.env.PACKAGE_VERSION,
@@ -88,7 +91,7 @@ export default defineComponent({
   },
   computed: {
     userLocation() {
-      const l = this.user.loc;
+      const l = this.game.loc;
       // console.log(l);
       return l.name();
     },

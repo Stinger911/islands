@@ -10,3 +10,10 @@
 .q-page-container main {
   height: 100vh;
 }
+.game-btn {
+  padding-bottom: 8px;
+  padding-top: 4px;
+  background-image: url(../../public/assets/images/btn_back.png) !important;
+  background-size: 100% 100% !important;
+  color: #f2c037;
+}

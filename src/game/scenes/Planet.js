@@ -1,6 +1,6 @@
 import Phaser from "phaser";
+import { useGameStore } from "src/stores/game";
 import { useMainStore } from "src/stores/main";
-import { useUserStore } from "src/stores/user";
 
 const TILE_HEIGHT = 76;
 const TILE_WIDTH = 66;
@@ -30,7 +30,7 @@ class PlanetView extends Phaser.Scene {
     const state = useMainStore();
     state.scene = "Planet";
 
-    const gameData = useUserStore();
+    const gameData = useGameStore();
     var zone = gameData.planet.map.zone(0);
     // console.log(zone);
 
@@ -91,6 +91,27 @@ class PlanetView extends Phaser.Scene {
 
     this.game.events.on("zoomReset", () => {
       this.cameras.main.zoom = terrain.baseZoom * 2;
+    });
+
+    this.input.keyboard.on("keydown", (event) => {
+      if (event.code == "KeyE") {
+        this.game.events.emit("onMove", 1);
+      }
+      if (event.code == "KeyD" || event.code == "ArrowRight") {
+        this.game.events.emit("onMove", 2);
+      }
+      if (event.code == "KeyX" || event.code == "ArrowDown") {
+        this.game.events.emit("onMove", 3);
+      }
+      if (event.code == "KeyZ") {
+        this.game.events.emit("onMove", 4);
+      }
+      if (event.code == "KeyA" || event.code == "ArrowLeft") {
+        this.game.events.emit("onMove", 5);
+      }
+      if (event.code == "KeyW" || event.code == "ArrowUp") {
+        this.game.events.emit("onMove", 6);
+      }
     });
 
     this.game.events.on("onMove", (dir) => {

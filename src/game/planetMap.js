@@ -240,6 +240,7 @@ export class PlanetMap {
             queue.push([nt, no, ny, nx]);
           }
           nx = fx + 1;
+          ny = fy;
           nt = this.connections[t][(o + 1) % 3][0];
           no = (this.connections[t][(o + 1) % 3][1] + o) % 6;
           if (0 <= nx && nx < 5 && 0 <= ny && ny < 3) {
