@@ -69,8 +69,10 @@ class PlanetView extends Phaser.Scene {
     this.cameras.main.startFollow(this.ship);
     this.cameras.main.setZoom(terrain.baseZoom);
 
-    this.game.events.on("next", () => {
-      this.logClick(this);
+    this.game.events.on("enter", () => {
+      this.removeEvents();
+      this.scene.stop("PlanetView");
+      this.scene.start("HangarView");
     });
 
     this.game.events.on("zoomIn", () => {
@@ -170,17 +172,11 @@ class PlanetView extends Phaser.Scene {
   }
 
   removeEvents() {
-    this.game.events.removeListener("next");
+    this.game.events.removeListener("enter");
+    this.game.events.removeListener("onMove");
     this.game.events.removeListener("zoomIn");
     this.game.events.removeListener("zoomOut");
     this.game.events.removeListener("zoomReset");
-  }
-
-  logClick(gameObj) {
-    // this.events.emit("planet");
-    this.removeEvents();
-    this.game.scene.stop("PlanetView");
-    this.game.scene.start("HangarView");
   }
 }
 

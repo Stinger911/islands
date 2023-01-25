@@ -1,6 +1,6 @@
 {
   "name": "islands",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Steampunk Idle Sandbox",
   "productName": "Islands in the Void",
   "author": "Andrew Abramov <stinger911@gmail.com>",
@@ -8,8 +8,9 @@
   "scripts": {
     "lint": "eslint --fix --ext .js,.vue ./",
     "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "test": "jest",
-    "deploy": "npx quasar build && npx gh-pages --dist dist/spa",
+    "test": "npx jest --modulePaths=`pwd`",
+    "dev": "npx quasar dev",
+    "deploy": "npx quasar build && npx gh-pages -f --dist dist/spa",
     "pre-commit": "npm run lint && npm --no-git-tag-version version patch && git add package*.json"
   },
   "dependencies": {

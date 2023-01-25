@@ -5,9 +5,9 @@
       <q-btn outline label="0" @click="onZoomZero" />
       <q-btn outline label="+" @click="onZoomIn" />
     </q-btn-group>
-    <q-btn @click="onNext()" class="self-center game-btn" flat
-      >Enter Hangar</q-btn
-    >
+    <q-btn @click="onEnter()" class="self-center game-btn" flat>
+      Enter Hangar
+    </q-btn>
     <div
       class="row"
       style="
@@ -55,12 +55,15 @@
 
 <script>
 import { Game } from "src/game/main";
+import { useGameStore } from "src/stores/game";
 export default {
   name: "PlanetControl",
   setup() {
+    const game = useGameStore();
     return {
-      onNext() {
-        Game.events.emit("next");
+      onEnter() {
+        game.loc_bld = 0;
+        Game.events.emit("enter");
       },
       onZoomIn() {
         Game.events.emit("zoomIn");

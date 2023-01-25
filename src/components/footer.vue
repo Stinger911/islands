@@ -8,6 +8,7 @@
       <template v-else>
         <hangar-control v-if="view == 'Hangar'"></hangar-control>
         <planet-control v-else-if="view == 'Planet'"></planet-control>
+        <jump-control v-else-if="view == 'Jump'"></jump-control>
         <p v-else>{{ view }}</p>
       </template>
     </q-toolbar-title>
@@ -20,10 +21,11 @@ import { computed, ref } from "vue";
 import { useMainStore } from "src/stores/main";
 import HangarControl from "./hangar_control";
 import PlanetControl from "./planet_control";
+import JumpControl from "./jump_control.vue";
 
 export default {
   name: "GameFooter",
-  components: { HangarControl, PlanetControl },
+  components: { HangarControl, PlanetControl, JumpControl },
   props: {
     space: Number,
   },

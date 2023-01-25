@@ -28,4 +28,17 @@ export let Game = null;
 export const CreateGame = function (title) {
   config.parent = title;
   Game = new Phaser.Game(config);
+  // DEBUG below this line
+  window.ss = SelectScene;
+  window.g = Game;
+};
+
+export const SelectScene = function (key) {
+  if (Game != null) {
+    Game.scene.scenes.forEach((sc) => {
+      // console.log(sc, sc.scene.key);
+      sc.scene.stop();
+    });
+    Game.scene.scenes[0].scene.start(key);
+  }
 };

@@ -83,6 +83,28 @@ export default defineComponent({
           this.$router.push("/");
         });
       },
+      saveGame() {
+        let sg = {};
+        try {
+          sg = JSON.parse(window.localStorage.getItem("savedGames"));
+          if (sg == null) sg = {};
+        } catch {
+          sg = {};
+        }
+        console.log(this.game.userName, this.game.json);
+        sg[this.game.userName] = this.game.json;
+        window.localStorage.setItem("savedGames", JSON.stringify(sg));
+      },
+      onResize(win, evt) {
+        const aspect =
+          window.innerWidth -
+          Math.min(window.innerWidth / 800, window.innerHeight / 600) * 800;
+        if (!isNaN(aspect)) {
+          this.wid = Math.round(aspect);
+          this.headPad = "" + aspect / 2 + "px";
+        }
+        // console.log(this.wid);
+      },
     };
   },
   mounted() {
@@ -94,18 +116,6 @@ export default defineComponent({
       const l = this.game.loc;
       // console.log(l);
       return l.name();
-    },
-  },
-  methods: {
-    onResize(win, evt) {
-      const aspect =
-        window.innerWidth -
-        Math.min(window.innerWidth / 800, window.innerHeight / 600) * 800;
-      if (!isNaN(aspect)) {
-        this.wid = Math.round(aspect);
-        this.headPad = "" + aspect / 2 + "px";
-      }
-      // console.log(this.wid);
     },
   },
 });

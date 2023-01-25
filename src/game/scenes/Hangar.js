@@ -12,7 +12,7 @@ class HangarView extends Phaser.Scene {
 
   preload() {
     // Used for preloading assets into your scene, such as
-    this.load.image("sky", "assets/images/hangar.jpg");
+    this.load.image("hangar", "assets/images/hangar.jpg");
     this.load.image("logo", "assets/logo.png");
     this.load.image("red", "assets/red.png");
   }
@@ -21,7 +21,7 @@ class HangarView extends Phaser.Scene {
     const state = useMainStore();
     state.scene = "Hangar";
     // Used to add objects to your game
-    this.add.image(400, 300, "sky");
+    this.add.image(400, 300, "hangar");
 
     var particles = this.add.particles("red");
 
@@ -43,10 +43,10 @@ class HangarView extends Phaser.Scene {
     logo.body.customBoundsRectangle.setSize(200, 200);
 
     this.input.on("pointerup", () => {
-      this.logClick(this);
+      this.exitFunc(this);
     });
-    this.game.events.on("next", () => {
-      this.logClick(this);
+    this.game.events.on("exit", () => {
+      this.exitFunc(this);
     });
   }
 
@@ -54,8 +54,9 @@ class HangarView extends Phaser.Scene {
     // Used to update your game. This function runs constantly
   }
 
-  logClick(gameObj) {
+  exitFunc(gameObj) {
     // this.events.emit("planet");
+    this.game.events.removeListener("exit");
     this.game.scene.stop("HangarView");
     this.game.scene.start("PlanetView");
   }

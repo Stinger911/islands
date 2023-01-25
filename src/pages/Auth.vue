@@ -58,12 +58,23 @@
           style="max-height: 150px; scroll: auto"
         >
           <tbody>
-            <tr v-for="i in games" v-bind:key="i.name">
-              <td class="text-left">{{ i.name }}</td>
-              <td class="text-right date-time">{{ i.date }}</td>
-              <td class="text-right">
-                <q-btn round dense flat color="negative" icon="cancel" />
-                <q-btn round dense flat icon="send" />
+            <tr v-for="i in games" v-bind:key="i.userName">
+              <td class="text-left text-lumi">{{ i.userName }}</td>
+              <td class="text-right date-time text-lumi">{{ i.sDate }}</td>
+              <td class="text-right text-ui">
+                <q-btn
+                  round
+                  dense
+                  flat
+                  color="negative"
+                  icon="cancel"
+                  @click="delGame(i.userName)"
+                >
+                  <q-tooltip>Delete this game</q-tooltip>
+                </q-btn>
+                <q-btn round dense flat icon="send">
+                  <q-tooltip>Continue saved game</q-tooltip>
+                </q-btn>
               </td>
             </tr>
           </tbody>
@@ -95,9 +106,15 @@ export default {
 
     let data = window.localStorage.getItem("savedGames");
     if (data == null) {
-      data = "[]";
+      data = "{}";
     }
     const saved = JSON.parse(data);
+    var sg = [];
+    for (const key in saved) {
+      if (saved.hasOwnProperty(key)) {
+        sg.push(JSON.parse(saved[key]));
+      }
+    }
 
     return {
       rng: rng,
@@ -117,7 +134,7 @@ export default {
           value: "sandbox",
         },
       ],
-      games: saved,
+      games: ref(sg),
 
       newName() {
         this.text = makeName(this.rng) + " " + makeName(this.rng);
@@ -127,6 +144,25 @@ export default {
         const main = useMainStore();
         game.newGame(this.text);
         main.login();
+      },
+      delGame(name) {
+        let sg = {};
+        try {
+          sg = JSON.parse(window.localStorage.getItem("savedGames"));
+          if (sg == null) sg = {};
+        } catch {
+          sg = {};
+        }
+        delete sg[name];
+        console.log(name, sg);
+        window.localStorage.setItem("savedGames", JSON.stringify(sg));
+        var gm = [];
+        for (const key in sg) {
+          if (sg.hasOwnProperty(key)) {
+            gm.push(JSON.parse(sg[key]));
+          }
+        }
+        this.games = gm;
       },
     };
   },
