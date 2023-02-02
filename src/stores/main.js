@@ -5,6 +5,9 @@ export const useMainStore = defineStore("main", {
     logged: false,
     online: false,
     scene: "",
+    blds: false,
+    objs: false,
+    beforeMap: "",
   }),
 
   getters: {

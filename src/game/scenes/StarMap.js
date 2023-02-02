@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { useMainStore } from "src/stores/main";
 
 class StarMapView extends Phaser.Scene {
   constructor() {
@@ -11,16 +12,17 @@ class StarMapView extends Phaser.Scene {
 
   preload() {
     // Used for preloading assets into your scene, such as
-    this.load.image("sky", "assets/space3.png");
-    this.load.image("logo", "assets/logo.png");
-    this.load.image("red", "assets/red.png");
+    this.load.image("starMapBack", "assets/images/nebula-wallpaper.jpeg");
+    this.load.image("nebula", "assets/red.png");
   }
 
   create(data) {
+    const state = useMainStore();
+    state.scene = "StarMap";
     // Used to add objects to your game
-    this.add.image(400, 300, "sky");
+    this.add.image(400, 300, "starMapBack");
 
-    var particles = this.add.particles("red");
+    var particles = this.add.particles("nebula");
 
     var emitter = particles.createEmitter({
       speed: 100,
@@ -28,13 +30,19 @@ class StarMapView extends Phaser.Scene {
       blendMode: "ADD",
     });
 
-    var logo = this.physics.add.image(400, 100, "logo");
+    var logo = this.physics.add.image(400, 100, "nebula");
 
     logo.setVelocity(100, 200);
     logo.setBounce(1, 1);
     logo.setCollideWorldBounds(true);
 
     emitter.startFollow(logo);
+
+    this.game.events.on("close", () => {
+      this.game.events.removeListener("close");
+      this.scene.stop("StarMapView");
+      this.scene.start(state.beforeMap);
+    });
   }
 
   update(time, delta) {

@@ -18,6 +18,11 @@
                 <q-item-section>Save</q-item-section>
               </q-item>
               <q-separator />
+              <!-- Restor in dependency of skills -->
+              <!-- q-item v-close-popup clickable @click="starMap()">
+                <q-item-section class="text-lumi">Star Map</q-item-section>
+              </q-item -->
+              <q-separator />
               <q-item
                 v-close-popup
                 clickable
@@ -54,6 +59,8 @@ import { useQuasar } from "quasar";
 import GameFooter from "components/footer";
 import { useMainStore } from "../stores/main";
 import { useGameStore } from "src/stores/game";
+import AboutDlg from "src/components/AboutDlg.vue";
+import { Game } from "src/game/main";
 
 export default defineComponent({
   components: { GameFooter },
@@ -70,6 +77,11 @@ export default defineComponent({
       wid: ref(window.innerWidth),
       headPad: ref("0px"),
       version: process.env.PACKAGE_VERSION,
+      aboutDlg() {
+        $q.dialog({
+          component: AboutDlg,
+        });
+      },
       resetGame() {
         $q.dialog({
           title: "Confirm",
@@ -104,6 +116,13 @@ export default defineComponent({
           this.headPad = "" + aspect / 2 + "px";
         }
         // console.log(this.wid);
+      },
+      starMap() {
+        const view = Game.scene.getScenes(true)[0];
+        main.beforeMap = view.scene.key;
+        console.log(main.beforeMap);
+        view.scene.stop(main.beforeMap);
+        view.scene.start("StarMapView");
       },
     };
   },

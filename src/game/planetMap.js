@@ -1,5 +1,6 @@
 import seedrandom from "seedrandom";
-import { replaceAt } from "./support";
+import { Entity, Building, BldType } from "./entity";
+import { randint, replaceAt } from "./support";
 
 export const TERRAIN = {
   GROUND: 0,
@@ -114,7 +115,8 @@ export class PlanetMap {
    * @param {number} triSize  - which is the size of the triangles
    * @param {*}      seed     - seed for random numbers generator
    */
-  constructor(tris, triSize, seed) {
+  constructor(tris, triSize, seed, isMain = false) {
+    this.isMain = isMain;
     /**
      * @property Size of the triangle (by side)
      * @type {number}
@@ -154,28 +156,188 @@ export class PlanetMap {
       ["d", "u", "d", "u", "d"],
     ];
     /**
+     * Mapping between x;y (zone) coords and tri;hex (planet) coords
+     * @property
+     * @protected
+     */
+    this.coords = [];
+    /**
      * Set of buildings placed on the planet
      * @property
      * @protected
+     * @type {Building[]}
      */
     this.buildings = [];
     /**
      * Set of objects and enimies placed on the planet
      * @property
      * @protected
+     * @type {Entity[]}
      */
     this.objects = [];
   }
 
+  /**
+   *
+   * @param {number} tri coordinate
+   * @param {number} hex coordinate
+   * @returns {boolean} false  of {Building} if found
+   */
+  hasBld(tri, hex) {
+    let res = false;
+    this.buildings.forEach((bld, idx) => {
+      if (bld.tri == tri && bld.hex == hex) {
+        res = bld;
+        res.idx = idx;
+      }
+    });
+    return res;
+  }
+
   move(tri, hex, dir) {
-    return tri, hex;
+    let [x, y] = this.th2xy(tri, hex);
+    let nx = x,
+      ny = y;
+    switch (dir) {
+      case 1:
+        ny = y - 1;
+        nx = x;
+        if (y % 2 == 1) nx++;
+        break;
+      case 2:
+        nx++;
+        break;
+      case 3:
+        ny = y + 1;
+        nx = x;
+        if (y % 2 == 1) nx++;
+        break;
+      case 4:
+        ny = y + 1;
+        nx = x - 1;
+        if (y % 2 == 1) nx++;
+        break;
+      case 5:
+        nx--;
+        break;
+      case 6:
+        ny = y - 1;
+        nx = x - 1;
+        if (y % 2 == 1) nx++;
+        break;
+    }
+    if (nx < 0 || nx >= this.coords[0].length) {
+      // no move
+      nx = x;
+      ny = y;
+    }
+    if (ny < 0 || ny >= this.coords.length) {
+      // no move
+      nx = x;
+      ny = y;
+    }
+    let [nt, nh] = this.xy2th(nx, ny);
+    if (this.triangles[nt].hex[nh] == 3) {
+      // console.log("wall");
+      nt = tri;
+      nh = hex;
+    }
+    return { tri: nt, hex: nh, x: nx, y: ny };
   }
 
   /**
    * Generate map for the planet. It is just @interface
    * and must be implemented in each particular planet class
    */
-  generate() {}
+  generate() {
+    const rng = seedrandom("ent" + this.seed);
+    this.zone(0); // make map for placing buildings
+    this.buildings = [];
+    if (this.isMain) {
+      // place capital city
+      let hx = randint(rng, 0, this.triangles[0].hex.length);
+      while (this.triangles[0].hex[hx] != 0) {
+        // do not place city on mountains
+        hx = randint(rng, 0, this.triangles[0].hex.length);
+      }
+      this.buildings.push(new Building(BldType.CITY, 0, hx));
+      // place beacon
+      hx = randint(rng, 0, this.triangles[0].hex.length);
+      while (this.triangles[0].hex[hx] != 0 || this.hasBld(0, hx)) {
+        // do not place beacon on city or mountains
+        hx = randint(rng, 0, this.triangles[0].hex.length);
+      }
+      this.buildings.push(new Building(BldType.BEACON, 0, hx));
+    }
+    // place form one to 3 observation points depends of planet size
+    for (let i = 0; i < Math.ceil((this.triSize - 11) / 3); i++) {
+      let tr = randint(rng, 0, this.triangles.length);
+      let hx = randint(rng, 0, this.triangles[0].hex.length);
+      while (this.triangles[tr].hex[hx] != 0 || this.hasBld(tr, hx)) {
+        // do not place beacon on city or mountains
+        hx = randint(rng, 0, this.triangles[0].hex.length);
+      }
+      this.buildings.push(new Building(BldType.POINT, tr, hx));
+    }
+    // console.log(this.buildings);
+  }
+
+  /**
+   *
+   * @param {number} x X-coord on zone map
+   * @param {number} y Y-coord on zone map
+   * @returns number[] - two elements array eith tri;hex coords or nulls
+   */
+  xy2th(x, y) {
+    if (0 < y && y < this.coords.length) {
+      if (0 < x && x < this.coords[y].length) {
+        return this.coords[y][x];
+      }
+    }
+    return [null, null];
+  }
+
+  /**
+   *
+   * @param {number} t "tri"-part of the coord
+   * @param {number} y "hex"-part of the coord
+   * @returns number[] - two elements array eith x;y coords or nulls
+   */
+  th2xy(t, h) {
+    const st = Math.round(this.triSize / 2);
+    const sy = st % 2 == 1 ? st - 1 : st;
+    for (let fx = 1; fx < 4; fx++) {
+      if (this.fill[1][fx] == t) {
+        let tx = st + (fx - 2) * st;
+        let ty = sy;
+        const ex = tx + this.triSize;
+        const ey = ty + this.triSize;
+        for (; ty < ey; ty++) {
+          for (let x = tx; x < ex; x++) {
+            let c = this.coords[ty][x];
+            if (c[0] == t && c[1] == h) {
+              return [x, ty];
+            }
+          }
+        }
+      }
+    }
+    if (this.fill[2][2] == t) {
+      let tx = st;
+      let ty = sy + this.triSize;
+      const ex = tx + this.triSize;
+      const ey = ty + this.triSize;
+      for (; ty < ey && ty < this.coords.length; ty++) {
+        for (let x = tx; x < ex; x++) {
+          let c = this.coords[ty][x];
+          if (c[0] == t && c[1] == h) {
+            return [x, ty];
+          }
+        }
+      }
+    }
+    return [null, null];
+  }
 
   /**
    * Make map for zone with given triangle in center
@@ -191,6 +353,7 @@ export class PlanetMap {
     ];
     const sz = this.triSize * 2 + 1;
     let map = [...Array(sz)].map((e) => new Array(sz).fill(0));
+    this.coords = [...Array(sz)].map((e) => new Array(sz).fill(0));
     const st = Math.round(this.triSize / 2);
     const sy = st % 2 == 1 ? st - 1 : st;
     let queue = [];
@@ -206,7 +369,13 @@ export class PlanetMap {
           tx--;
         }
         // console.log(tx, ty); // DEBUG
+        let tc = new Triangle(this.triSize);
+        for (let i = 0; i < tc.hex.length; i++) {
+          tc.hex[i] = [t, i];
+        }
+        if (fy == 2) tx--; // heuristics
         this.putTriangleToMap(map, tx, ty, this.triangles[t], o);
+        this.putTriangleToMap(this.coords, tx, ty, tc, o);
         if (this.fill[fy][fx] == "u") {
           let nx, ny, nt, no;
           nx = fx;
@@ -258,7 +427,7 @@ export class PlanetMap {
       }
     }
     // console.log(this.fill); // DEBUG
-    return { map: map, bld: [], obj: [] };
+    return { map: map, bld: this.buildings, obj: [] };
   }
 
   /**
@@ -453,8 +622,8 @@ export class PlanetMap {
 }
 
 export class Tetrahedron extends PlanetMap {
-  constructor(triSize, terrain, seed) {
-    super(4, triSize, seed);
+  constructor(triSize, terrain, seed, isMain = false) {
+    super(4, triSize, seed, isMain);
     this.terrain = terrain;
   }
 
@@ -500,7 +669,7 @@ export class Tetrahedron extends PlanetMap {
       [
         [3, 3, 1],
         [0, 1, 3],
-        [2, 5, 2],
+        [1, 5, 2],
       ], // junction to third triangle (2)
       [
         [2, 3, 1],
@@ -510,6 +679,10 @@ export class Tetrahedron extends PlanetMap {
     ];
   }
 
+  /**
+   * Generate planet map and objects on the surface
+   * @param {boolean} isMain - is planet main in the system (important for buildings generation)
+   */
   generate() {
     const rng = seedrandom(this.seed);
     // room for one row of 6 triangles
@@ -541,5 +714,6 @@ export class Tetrahedron extends PlanetMap {
       mp.push(rw);
     }
     this.fromFlat(mp);
+    super.generate();
   }
 }

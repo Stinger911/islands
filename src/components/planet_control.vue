@@ -5,9 +5,32 @@
       <q-btn outline label="0" @click="onZoomZero" />
       <q-btn outline label="+" @click="onZoomIn" />
     </q-btn-group>
-    <q-btn @click="onEnter()" class="self-center game-btn" flat>
-      Enter Hangar
-    </q-btn>
+    <div class="column self-center">
+      <q-btn
+        v-if="hasHangar()"
+        @click="onEnter()"
+        class="self-center game-btn"
+        flat
+      >
+        Enter Hangar
+      </q-btn>
+      <q-btn
+        v-if="isBeacon()"
+        @click="showStarmap()"
+        class="self-center game-btn"
+        flat
+      >
+        Look to stars
+      </q-btn>
+      <q-btn
+        v-if="isJump()"
+        @click="showJump()"
+        class="self-center game-btn"
+        flat
+      >
+        Find the path
+      </q-btn>
+    </div>
     <div
       class="row"
       style="
@@ -56,14 +79,48 @@
 <script>
 import { Game } from "src/game/main";
 import { useGameStore } from "src/stores/game";
+import { useMainStore } from "src/stores/main";
+import { BldType, EntityType } from "src/game/entity";
+
 export default {
   name: "PlanetControl",
   setup() {
     const game = useGameStore();
+    const main = useMainStore();
     return {
       onEnter() {
-        game.loc_bld = 0;
-        Game.events.emit("enter");
+        if (this.hasHangar()) {
+          game.loc_bld = main.blds.idx;
+          Game.events.emit("enter");
+        }
+      },
+      showStarmap() {
+        main.beforeMap = "PlanetView";
+        Game.events.emit("stars");
+      },
+      showJump() {
+        Game.events.emit("jump");
+      },
+      hasHangar() {
+        return (
+          main.blds !== false &&
+          main.blds.typ === EntityType.BUILDING &&
+          main.blds.sub === BldType.CITY
+        );
+      },
+      isBeacon() {
+        return (
+          main.blds !== false &&
+          main.blds.typ === EntityType.BUILDING &&
+          main.blds.sub === BldType.BEACON
+        );
+      },
+      isJump() {
+        return (
+          main.blds !== false &&
+          main.blds.typ === EntityType.BUILDING &&
+          main.blds.sub === BldType.POINT
+        );
       },
       onZoomIn() {
         Game.events.emit("zoomIn");

@@ -91,6 +91,8 @@ export const useGameStore = defineStore("gameData", {
       this.makeSS();
       this.loc_planet = this.ss.main;
       this.ss.planets[this.loc_planet].map.generate();
+      this.loc_tri = this.ss.planets[this.loc_planet].map.buildings[0].tri;
+      this.loc_hex = this.ss.planets[this.loc_planet].map.buildings[0].hex;
     },
     fromJson(json) {
       let js = {};

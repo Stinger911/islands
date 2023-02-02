@@ -148,7 +148,8 @@ export function makeSystem(rng) {
       obj.planets[i].map = new Tetrahedron(
         sz + 11,
         tr,
-        randint(rng, 0, 1 << 24)
+        randint(rng, 0, 1 << 24),
+        i == obj.main
       );
     }
   }

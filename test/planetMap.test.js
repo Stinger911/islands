@@ -3,18 +3,18 @@ import { Triangle, Tetrahedron, PlanetMap } from "../src/game/planetMap";
 
 describe("PlanetMap Elements Tests", () => {
   const visualMap5 = [
-    [9, 9, 3, 2, 0, 0, 0, 3, 2, 3, 0, 0, 0, 1],
+    [9, 9, 8, 2, 0, 0, 0, 8, 2, 8, 0, 0, 0, 1],
     [9, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 4, 0, 9],
-    [9, 0, 0, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 9],
-    [0, 1, 1, 0, 0, 0, 0, 3, 0, 0, 0, 0, 9, 9],
-    [2, 0, 0, 0, 1, 1, 1, 0, 0, 0, 3, 2, 9, 9],
+    [9, 0, 0, 0, 0, 2, 0, 0, 8, 0, 0, 4, 0, 9],
+    [0, 1, 1, 0, 0, 0, 0, 8, 0, 0, 0, 0, 9, 9],
+    [2, 0, 0, 0, 1, 1, 1, 0, 0, 0, 8, 2, 9, 9],
   ];
 
   const visualMap4 = [
-    [9, 3, 2, 0, 0, 3, 2, 3, 0, 0, 1],
+    [9, 8, 2, 0, 0, 8, 2, 8, 0, 0, 1],
     [9, 0, 0, 0, 2, 0, 0, 0, 0, 4, 0],
-    [0, 1, 0, 0, 0, 0, 3, 0, 0, 0, 9],
-    [2, 0, 0, 1, 1, 1, 0, 0, 3, 2, 9],
+    [0, 1, 0, 0, 0, 0, 8, 0, 0, 0, 9],
+    [2, 0, 0, 1, 1, 1, 0, 0, 8, 2, 9],
   ];
 
   function printTriangle(tri) {
@@ -48,7 +48,7 @@ describe("PlanetMap Elements Tests", () => {
     tri.fromFlatUp(visualMap5, 0);
     // printTriangle(tri);
     let r = tri.hex;
-    expect(r[0]).toBe(3);
+    expect(r[0]).toBe(8);
     expect(r[10]).toBe(2);
     expect(r[14]).toBe(1);
     expect(r[8]).toBe(1);
@@ -109,7 +109,7 @@ describe("PlanetMap Elements Tests", () => {
     r = tri.triangles[2].hex;
     expect(r[0]).toBe(1);
     expect(r[14]).toBe(2);
-    expect(r[4]).toBe(3);
+    expect(r[4]).toBe(8);
     r = tri.triangles[3].hex;
     expect(r[0]).toBe(1);
     expect(r[14]).toBe(2);
@@ -154,7 +154,7 @@ describe("PlanetMap Elements Tests", () => {
     planet.putOnMapUp(mp, p, p, planet.triangles[0].hex, planet.triSize);
     // console.log(printMap(mp));
     expect(mp[3][5]).toBe(1);
-    expect(mp[7][3]).toBe(3);
+    expect(mp[7][3]).toBe(8);
     expect(mp[7][7]).toBe(2);
   });
 
@@ -184,7 +184,7 @@ describe("PlanetMap Elements Tests", () => {
     planet.putOnMapUp(mp, p, p, planet.triangles[0].hex, planet.triSize);
     // console.log(printMap(mp));
     expect(mp[2][4]).toBe(1);
-    expect(mp[5][2]).toBe(3);
+    expect(mp[5][2]).toBe(8);
     expect(mp[5][5]).toBe(2);
   });
 
@@ -214,7 +214,7 @@ describe("PlanetMap Elements Tests", () => {
     planet.putOnMapDown(mp, p, p, planet.triangles[0].hex, planet.triSize);
     // console.log(printMap(mp));
     expect(mp[7][5]).toBe(1);
-    expect(mp[3][7]).toBe(3);
+    expect(mp[3][7]).toBe(8);
     expect(mp[3][3]).toBe(2);
   });
 
@@ -266,10 +266,10 @@ describe("PlanetMap Elements Tests", () => {
     }
     // console.log(printMap(mp));
     expect(mp[4]).toEqual([
-      3, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1, 1, 1, 0, 0, 0, 3, 3, 3, 0, 0, 0,
+      8, 0, 0, 0, 2, 2, 2, 0, 0, 0, 1, 1, 1, 0, 0, 0, 8, 8, 8, 0, 0, 0,
     ]);
     expect(mp[5]).toEqual([
-      2, 0, 0, 0, 3, 2, 1, 0, 0, 0, 2, 1, 3, 0, 0, 0, 1, 3, 2, 0, 0, 0,
+      2, 0, 0, 0, 8, 2, 1, 0, 0, 0, 2, 1, 8, 0, 0, 0, 1, 8, 2, 0, 0, 0,
     ]);
   });
 
@@ -302,10 +302,10 @@ describe("PlanetMap Elements Tests", () => {
     }
     // console.log(printMap(mp));
     expect(mp[3]).toEqual([
-      3, 0, 0, 2, 2, 2, 0, 0, 1, 1, 1, 0, 0, 3, 3, 3, 0, 0, 2,
+      8, 0, 0, 2, 2, 2, 0, 0, 1, 1, 1, 0, 0, 8, 8, 8, 0, 0, 2,
     ]);
     expect(mp[4]).toEqual([
-      2, 0, 0, 3, 2, 1, 0, 0, 2, 1, 3, 0, 0, 1, 3, 2, 0, 0, 3,
+      2, 0, 0, 8, 2, 1, 0, 0, 2, 1, 8, 0, 0, 1, 8, 2, 0, 0, 8,
     ]);
   });
 
@@ -321,5 +321,50 @@ describe("PlanetMap Elements Tests", () => {
     planet.generate();
     const mp = planet.zone(0);
     console.log(printMap(mp.map));
+  });
+
+  it("Coordinates Test", () => {
+    const planet = new Tetrahedron(5, "t", 0);
+    planet.fromFlat(visualMap5);
+    const mp = planet.zone(0);
+    // console.log(planet.coords);
+    expect(planet.th2xy(0, 0)).toEqual([5, 2]);
+    let cth = planet.xy2th(4, 5);
+    // console.log(cth);
+    expect(planet.th2xy(cth[0], cth[1])).toEqual([4, 5]);
+    cth = planet.th2xy(0, 0);
+    // console.log(cth);
+    expect(planet.xy2th(cth[0], cth[1])).toEqual([0, 0]);
+    cth = planet.th2xy(0, 10);
+    // console.log(cth);
+    expect(planet.xy2th(cth[0], cth[1])).toEqual([0, 10]);
+    cth = planet.th2xy(0, 14);
+    // console.log(cth);
+    expect(planet.xy2th(cth[0], cth[1])).toEqual([0, 14]);
+  });
+
+  it("Move Test", () => {
+    const planet = new Tetrahedron(5, "t", 0);
+    planet.fromFlat(visualMap5);
+    planet.zone(0);
+    let t = 0,
+      h = 4;
+    let log = [];
+    for (let s = 0; s < 9; s++) {
+      let nc = planet.move(t, h, 2);
+      log.push(`{t: ${nc.tri}, h: ${nc.hex}, x: ${nc.x}, y: ${nc.y}}`);
+      if (nc.tri != t) {
+        // log.push(printMap(planet.fill));
+        let mp = planet.zone(nc.tri);
+        // log.push(printMap(mp.map));
+        // log.push(printMap(planet.fill));
+        let [x, y] = planet.th2xy(nc.tri, nc.hex);
+        log.push(`=> {t: ${nc.tri}, h: ${nc.hex}, x: ${x}, y: ${y}}`);
+      }
+      t = nc.tri;
+      h = nc.hex;
+    }
+    console.log(log.join("\n"));
+    expect([t, h]).toEqual([0, 4]);
   });
 });

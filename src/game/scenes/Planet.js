@@ -24,6 +24,10 @@ class PlanetView extends Phaser.Scene {
       frameWidth: 50,
       frameHeight: 70,
     });
+    this.load.spritesheet("builds", "assets/images/buildings.png", {
+      frameWidth: TILE_WIDTH,
+      frameHeight: TILE_HEIGHT,
+    });
   }
 
   create() {
@@ -31,48 +35,57 @@ class PlanetView extends Phaser.Scene {
     state.scene = "Planet";
 
     const gameData = useGameStore();
-    var zone = gameData.planet.map.zone(0);
-    // console.log(zone);
+    /*if (!this.terrain)*/ this.terrain = this.add.group();
+    /*if (!this.builds)*/ this.builds = this.add.group();
 
-    var terrain = this.add.group();
-    for (var y = 0, hy = TILE_HEIGHT / 4; y < zone.map.length; y++) {
-      let hx = 0;
-      if (y % 2 == 1) hx += Math.round(TILE_WIDTH / 2);
-      for (var x = 0; x < zone.map[y].length; x++) {
-        var hexagon = this.add.sprite(hx, hy, "tiles", zone.map[y][x]);
-        terrain.add(hexagon);
-        hx += TILE_WIDTH;
-      }
-      hy += Math.round((TILE_HEIGHT * 3) / 4);
-    }
-    terrain.dysplayX =
-      Math.round(TILE_WIDTH * zone.map[0].length) - TILE_WIDTH / 2;
-    terrain.dysplayY = Math.round(
-      (TILE_HEIGHT * zone.map.length * 3) / 4 - TILE_HEIGHT / 4
+    console.log(this);
+    const sz = this.drawMap(gameData.loc_tri);
+
+    this.terrain.dysplayX = Math.round(TILE_WIDTH * sz.width) - TILE_WIDTH / 2;
+    this.terrain.dysplayY = Math.round(
+      (TILE_HEIGHT * sz.height * 3) / 4 - TILE_HEIGHT / 4
     );
-    terrain.baseZoom = Math.max(800 / terrain.dysplayX, 600 / terrain.dysplayY);
-    terrain.zoom = terrain.baseZoom;
-    // console.log(terrain);
-    // buildings
-    // moving objects
+    this.terrain.baseZoom = Math.max(
+      800 / this.terrain.dysplayX,
+      600 / this.terrain.dysplayY
+    );
+    this.terrain.zoom = this.terrain.baseZoom;
     // player
-    y = zone.map.length / 2;
-    x = (zone.map[0].length / 2) * TILE_WIDTH;
-    if (y % 2 == 1) hx += Math.round(TILE_WIDTH / 2);
-    y = y * ((TILE_HEIGHT * 3) / 4) - TILE_HEIGHT / 8;
-    this.ship = this.add.sprite(x, y, "sprites", 0);
+    let [x, y] = gameData.planet.map.th2xy(gameData.loc_tri, gameData.loc_hex);
+    x *= TILE_WIDTH;
+    if (y % 2 == 1) x += Math.round(TILE_WIDTH / 2);
+    y = y * ((TILE_HEIGHT * 3) / 4) + TILE_HEIGHT / 4;
+    this.ship = this.add.sprite(x, y, "sprites", 1);
+    this.ship.depth = 40;
     this.target = new Phaser.Math.Vector2();
     this.target.x = x;
     this.target.y = y;
 
-    this.cameras.main.setBounds(0, 0, terrain.dysplayX, terrain.dysplayY);
+    this.cameras.main.setBounds(
+      0,
+      0,
+      this.terrain.dysplayX,
+      this.terrain.dysplayY
+    );
     this.cameras.main.startFollow(this.ship);
-    this.cameras.main.setZoom(terrain.baseZoom);
+    this.cameras.main.setZoom(this.terrain.baseZoom);
 
     this.game.events.on("enter", () => {
       this.removeEvents();
       this.scene.stop("PlanetView");
       this.scene.start("HangarView");
+    });
+
+    this.game.events.on("stars", () => {
+      this.removeEvents();
+      this.scene.stop("PlanetView");
+      this.scene.start("StarMapView");
+    });
+
+    this.game.events.on("jump", () => {
+      this.removeEvents();
+      this.scene.stop("PlanetView");
+      this.scene.start("JumpView");
     });
 
     this.game.events.on("zoomIn", () => {
@@ -117,58 +130,117 @@ class PlanetView extends Phaser.Scene {
     });
 
     this.game.events.on("onMove", (dir) => {
-      switch (dir) {
-        case 1:
-          this.ship.setFrame(5);
-          this.target.x += TILE_WIDTH / 2;
-          this.target.y -= Math.round((TILE_HEIGHT * 3) / 4);
-          break;
-        case 2:
-          this.ship.setFrame(1);
-          this.target.x += TILE_WIDTH;
-          break;
-        case 3:
-          this.ship.setFrame(3);
-          this.target.x += TILE_WIDTH / 2;
-          this.target.y += Math.round((TILE_HEIGHT * 3) / 4);
-          break;
-        case 4:
-          this.ship.setFrame(2);
-          this.target.x -= TILE_WIDTH / 2;
-          this.target.y += Math.round((TILE_HEIGHT * 3) / 4);
-          break;
-        case 5:
-          this.ship.setFrame(0);
-          this.target.x -= TILE_WIDTH;
-          break;
-        case 6:
-          this.ship.setFrame(4);
-          this.target.x -= TILE_WIDTH / 2;
-          this.target.y -= Math.round((TILE_HEIGHT * 3) / 4);
-          break;
-        default:
-          console.error("Stop to hack!! Dir is " + dir);
-          break;
+      const nc = gameData.planet.map.move(
+        gameData.loc_tri,
+        gameData.loc_hex,
+        dir
+      );
+      // console.log(nc);
+      if (nc.tri != gameData.loc_tri) {
+        // console.log("Rebuild zone to " + nc.tri);
+        this.drawMap(nc.tri);
+        let [px, py] = gameData.planet.map.th2xy(
+          gameData.loc_tri,
+          gameData.loc_hex
+        );
+        let [x, y] = gameData.planet.map.th2xy(nc.tri, nc.hex);
+        x *= TILE_WIDTH;
+        if (y % 2 == 1) x += Math.round(TILE_WIDTH / 2);
+        y = y * ((TILE_HEIGHT * 3) / 4) + TILE_HEIGHT / 4;
+        px *= TILE_WIDTH;
+        if (py % 2 == 1) px += Math.round(TILE_WIDTH / 2);
+        py = py * ((TILE_HEIGHT * 3) / 4) + TILE_HEIGHT / 4;
+        this.tweens.killAll();
+        this.ship.setPosition(px, py);
+        this.tweens.add({
+          targets: this.ship,
+          x: x,
+          y: y,
+          delay: 300,
+          duration: 1500,
+          ease: "Power2",
+        });
+      } else if (nc.hex != gameData.loc_hex) {
+        // console.log(nc);
+        this.target.y = nc.y;
+        this.target.x = nc.x * TILE_WIDTH;
+        if (this.target.y % 2 == 1) this.target.x += Math.round(TILE_WIDTH / 2);
+        this.target.y =
+          this.target.y * ((TILE_HEIGHT * 3) / 4) + TILE_HEIGHT / 4;
+        this.tweens.add({
+          targets: this.ship,
+          x: this.target.x,
+          y: this.target.y,
+          delay: 300,
+          duration: 1500,
+          ease: "Power2",
+        });
       }
-      this.tweens.add({
-        targets: this.ship,
-        x: this.target.x,
-        y: this.target.y,
-        delay: 300,
-        duration: 1500,
-        ease: "Power2",
-      });
-      // this.ship.setPosition(this.target.x, this.target.y);
-      // this.physics.moveToObject(this.ship, this.target, 200);
+      if (0 < dir && dir <= 6) {
+        this.ship.setFrame(dir - 1);
+      }
+      let blds = gameData.planet.map.hasBld(nc.tri, nc.hex);
+      state.blds = blds;
+      // console.log(state.blds, blds);
+      gameData.loc_tri = nc.tri;
+      gameData.loc_hex = nc.hex;
     });
 
     setTimeout(() => {
-      this.cameras.main.zoom = terrain.baseZoom * 2;
+      this.cameras.main.zoom = this.terrain.baseZoom * 2;
     }, 1);
   }
 
   update(time, delta) {
     // Used to update your game. This function runs constantly
+  }
+
+  drawMap(tri) {
+    const gameData = useGameStore();
+    var zone = gameData.planet.map.zone(tri);
+    // console.log(zone);
+
+    // terrain
+    // clear group before draw
+    this.terrain.clear(true, true);
+    for (var y = 0, hy = TILE_HEIGHT / 4; y < zone.map.length; y++) {
+      let hx = 0;
+      if (y % 2 == 1) hx += Math.round(TILE_WIDTH / 2);
+      for (var x = 0; x < zone.map[y].length; x++) {
+        var hexagon = this.add.sprite(hx, hy, "tiles", zone.map[y][x]);
+        hexagon.depth = 10;
+        this.terrain.add(hexagon);
+        hx += TILE_WIDTH;
+      }
+      hy += Math.round((TILE_HEIGHT * 3) / 4);
+    }
+    // console.log(terrain);
+    // buildings
+    // clear group before draw
+    this.builds.clear(true, true);
+    zone.bld.forEach((bld) => {
+      var bc = gameData.planet.map.th2xy(bld.tri, bld.hex);
+      let hy = bc[1] * Math.round((TILE_HEIGHT * 3) / 4);
+      let hx = bc[0] * TILE_WIDTH;
+      if (bc[1] % 2 == 1) hx += Math.round(TILE_WIDTH / 2);
+      var hexagon = this.add.sprite(hx, hy, "builds", bld.ico);
+      if (bld.ani != null) {
+        hexagon.anims.create({
+          key: "spin",
+          frames: this.anims.generateFrameNumbers("builds", {
+            frames: bld.ani,
+          }),
+          frameRate: bld.ani.length,
+          repeat: -1,
+        });
+        hexagon.play("spin");
+      }
+      hexagon.depth = 20;
+      this.builds.add(hexagon);
+    });
+    // moving objects
+
+    return { width: zone.map[0].length, height: zone.map.length };
   }
 
   removeEvents() {
