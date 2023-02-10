@@ -15,6 +15,17 @@ const routes = [
     ],
   },
   {
+    path: "/lost",
+    component: () => import("layouts/Basic.vue"),
+    children: [
+      {
+        path: "",
+        name: "gameover",
+        component: () => import("pages/Lost.vue"),
+      },
+    ],
+  },
+  {
     path: "/game",
     component: () => import("layouts/MainLayout.vue"),
     beforeEnter: (to, from, next) => {

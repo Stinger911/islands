@@ -2,7 +2,9 @@
   <!-- notice dialogRef here -->
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="background-color: #4e4e4e">
-      <q-card-section class="text-h5 text-center">About</q-card-section>
+      <q-card-section class="text-h5 text-center cosmogen text-ui"
+        >About</q-card-section
+      >
 
       <q-card-section>
         Steampunk roguelike game. You found yourself onboard of zeppeline in the
@@ -36,6 +38,7 @@ import { useDialogPluginComponent } from "quasar";
 import { useGameStore } from "src/stores/game";
 
 export default {
+  name: "AboutDlg",
   props: {
     // ...your custom props
   },

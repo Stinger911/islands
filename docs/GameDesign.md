@@ -245,3 +245,4 @@ This may be abbreviated with most in the Technical Bible.
 1. https://github.com/search?q=phaser+ui UI kits for Phaser
 1. https://wiki.eveuniversity.org/Missions reference to missions in EVE Online
 1. https://www.eveonline.com/eve-academy/careers/enforcer EVE Online PvE Guide as missions reference
+1. https://pipoya.itch.io/vehicle-ship-sprites

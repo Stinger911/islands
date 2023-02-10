@@ -8,6 +8,7 @@ export const useMainStore = defineStore("main", {
     blds: false,
     objs: false,
     beforeMap: "",
+    zoom: 0.5,
   }),
 
   getters: {

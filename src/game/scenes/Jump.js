@@ -14,14 +14,13 @@ class JumpView extends Phaser.Scene {
     const state = useMainStore();
     state.scene = "Jump";
     // Used for preloading assets into your scene, such as
-    this.load.image("sky", "assets/space3.png");
-    this.load.image("logo", "assets/logo.png");
+    this.load.image("jump_back", "assets/space3.png");
     this.load.image("red", "assets/red.png");
   }
 
   create(data) {
     // Used to add objects to your game
-    this.add.image(400, 300, "sky");
+    this.add.image(400, 300, "jump_back");
 
     var particles = this.add.particles("red");
 
@@ -31,7 +30,7 @@ class JumpView extends Phaser.Scene {
       blendMode: "ADD",
     });
 
-    var logo = this.physics.add.image(400, 100, "logo");
+    var logo = this.physics.add.image(400, 100, "red");
 
     logo.setVelocity(100, 200);
     logo.setBounce(1, 1);
@@ -49,7 +48,7 @@ class JumpView extends Phaser.Scene {
   }
 
   exitFunc(gameObj) {
-    // this.events.emit("planet");
+    // console.log("jump exit", this.game.events);
     this.game.events.removeListener("exit");
     this.game.scene.stop("JumpView");
     this.game.scene.start("PlanetView");

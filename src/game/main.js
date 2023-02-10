@@ -23,6 +23,7 @@ const config = {
   scene: [HangarView, PlanetView, BattleView, JumpView, StarMapView],
 };
 
+export const BLIND_RATE = 0.1;
 export let Game = null;
 
 export const CreateGame = function (title) {

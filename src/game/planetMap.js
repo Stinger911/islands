@@ -194,6 +194,17 @@ export class PlanetMap {
     return res;
   }
 
+  hasEnt(tri, hex) {
+    let res = false;
+    this.objects.forEach((bld, idx) => {
+      if (bld.tri == tri && bld.hex == hex) {
+        res = bld;
+        res.idx = idx;
+      }
+    });
+    return res;
+  }
+
   move(tri, hex, dir) {
     let [x, y] = this.th2xy(tri, hex);
     let nx = x,
@@ -237,10 +248,22 @@ export class PlanetMap {
       ny = y;
     }
     let [nt, nh] = this.xy2th(nx, ny);
+    if (
+      nt == null ||
+      nh == null ||
+      nt < 0 ||
+      nt > this.triangles.length ||
+      nh < 0 ||
+      nh > this.triangles[nt].hex.length
+    ) {
+      console.log({ nt, nh, tri, hex, x, y, nx, ny, dir });
+    }
     if (this.triangles[nt].hex[nh] == 3) {
       // console.log("wall");
       nt = tri;
       nh = hex;
+      nx = x;
+      ny = y;
     }
     return { tri: nt, hex: nh, x: nx, y: ny };
   }

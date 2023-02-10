@@ -4,12 +4,12 @@
       <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
-            <div class="text-h6 text-center">Login</div>
+            <div class="text-h4 text-ui text-center cosmogen">New Game</div>
           </div>
         </div>
       </q-card-section>
 
-      <q-card-section>
+      <q-card-section class="spacefont">
         <q-select
           rounded
           outlined
@@ -24,7 +24,7 @@
 
       <q-separator />
 
-      <q-card-section v-if="gtype == 'local'" class="text-center">
+      <q-card-section v-if="gtype == 'local'" class="text-center spacefont">
         <q-input
           outlined
           v-model="text"

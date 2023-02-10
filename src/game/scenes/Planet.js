@@ -2,8 +2,19 @@ import Phaser from "phaser";
 import { useGameStore } from "src/stores/game";
 import { useMainStore } from "src/stores/main";
 
-const TILE_HEIGHT = 76;
-const TILE_WIDTH = 66;
+const TILE_HEIGHT = 200;
+const TILE_WIDTH = 173;
+const SPR_HEIGHT = 140;
+const SPR_WIDTH = 100;
+
+const TILE_BASE = {
+  t: 0,
+  d: 5,
+  r: 10,
+  l: 15,
+  w: 20,
+  i: 20,
+};
 class PlanetView extends Phaser.Scene {
   constructor() {
     super("PlanetView");
@@ -15,14 +26,13 @@ class PlanetView extends Phaser.Scene {
 
   preload() {
     // Used for preloading assets into your scene, such as
-    // target tileset is https://graphicriver.net/item/map-tiles/24002537
     this.load.spritesheet("tiles", "assets/images/tiles.png", {
       frameWidth: TILE_WIDTH,
       frameHeight: TILE_HEIGHT,
     });
     this.load.spritesheet("sprites", "assets/images/sprites.png", {
-      frameWidth: 50,
-      frameHeight: 70,
+      frameWidth: SPR_WIDTH,
+      frameHeight: SPR_HEIGHT,
     });
     this.load.spritesheet("builds", "assets/images/buildings.png", {
       frameWidth: TILE_WIDTH,
@@ -38,7 +48,7 @@ class PlanetView extends Phaser.Scene {
     /*if (!this.terrain)*/ this.terrain = this.add.group();
     /*if (!this.builds)*/ this.builds = this.add.group();
 
-    console.log(this);
+    //console.log(this);
     const sz = this.drawMap(gameData.loc_tri);
 
     this.terrain.dysplayX = Math.round(TILE_WIDTH * sz.width) - TILE_WIDTH / 2;
@@ -46,10 +56,9 @@ class PlanetView extends Phaser.Scene {
       (TILE_HEIGHT * sz.height * 3) / 4 - TILE_HEIGHT / 4
     );
     this.terrain.baseZoom = Math.max(
-      800 / this.terrain.dysplayX,
-      600 / this.terrain.dysplayY
+      this.game.config.width / this.terrain.dysplayX,
+      this.game.config.height / this.terrain.dysplayY
     );
-    this.terrain.zoom = this.terrain.baseZoom;
     // player
     let [x, y] = gameData.planet.map.th2xy(gameData.loc_tri, gameData.loc_hex);
     x *= TILE_WIDTH;
@@ -68,7 +77,8 @@ class PlanetView extends Phaser.Scene {
       this.terrain.dysplayY
     );
     this.cameras.main.startFollow(this.ship);
-    this.cameras.main.setZoom(this.terrain.baseZoom);
+    this.cameras.main.setZoom(this.game.config.height / (TILE_HEIGHT * 5));
+    console.log(this.cameras.main.zoom);
 
     this.game.events.on("enter", () => {
       this.removeEvents();
@@ -90,25 +100,29 @@ class PlanetView extends Phaser.Scene {
 
     this.game.events.on("zoomIn", () => {
       var zm = this.cameras.main.zoom * 1.1;
-      if (TILE_HEIGHT * zm > 600) {
-        zm = 600 / TILE_HEIGHT;
+      if (TILE_HEIGHT * zm > this.game.config.height) {
+        zm = this.game.config.height / TILE_HEIGHT;
       }
       this.cameras.main.zoom = zm;
+      this.emitZoom();
     });
 
     this.game.events.on("zoomOut", () => {
       var zm = this.cameras.main.zoom * 0.9;
-      if (zm < terrain.baseZoom * 2) {
-        zm = terrain.baseZoom * 2;
+      if (zm < this.terrain.baseZoom * 2) {
+        zm = this.terrain.baseZoom * 2;
       }
       this.cameras.main.zoom = zm;
+      this.emitZoom();
     });
 
     this.game.events.on("zoomReset", () => {
-      this.cameras.main.zoom = terrain.baseZoom * 2;
+      this.cameras.main.zoom = this.game.config.height / (TILE_HEIGHT * 5);
+      this.emitZoom();
     });
 
     this.input.keyboard.on("keydown", (event) => {
+      // console.log(event, gameData);
       if (event.code == "KeyE") {
         this.game.events.emit("onMove", 1);
       }
@@ -185,19 +199,24 @@ class PlanetView extends Phaser.Scene {
       gameData.loc_tri = nc.tri;
       gameData.loc_hex = nc.hex;
     });
-
-    setTimeout(() => {
-      this.cameras.main.zoom = this.terrain.baseZoom * 2;
-    }, 1);
   }
 
   update(time, delta) {
     // Used to update your game. This function runs constantly
   }
 
+  emitZoom() {
+    const state = useMainStore();
+    const zmn = this.terrain.baseZoom * 2;
+    const zmx = this.game.config.height / TILE_HEIGHT;
+    state.zoom = (this.cameras.main.zoom - zmn) / (zmx - zmn);
+    // console.log(zmx, state.zoom, this.cameras.main.zoom, zmn);
+  }
+
   drawMap(tri) {
     const gameData = useGameStore();
-    var zone = gameData.planet.map.zone(tri);
+    const t_base = TILE_BASE[gameData.planet.terrain];
+    let zone = gameData.planet.map.zone(tri);
     // console.log(zone);
 
     // terrain
@@ -207,7 +226,7 @@ class PlanetView extends Phaser.Scene {
       let hx = 0;
       if (y % 2 == 1) hx += Math.round(TILE_WIDTH / 2);
       for (var x = 0; x < zone.map[y].length; x++) {
-        var hexagon = this.add.sprite(hx, hy, "tiles", zone.map[y][x]);
+        var hexagon = this.add.sprite(hx, hy, "tiles", zone.map[y][x] + t_base);
         hexagon.depth = 10;
         this.terrain.add(hexagon);
         hx += TILE_WIDTH;
@@ -244,11 +263,14 @@ class PlanetView extends Phaser.Scene {
   }
 
   removeEvents() {
-    this.game.events.removeListener("enter");
-    this.game.events.removeListener("onMove");
-    this.game.events.removeListener("zoomIn");
-    this.game.events.removeListener("zoomOut");
-    this.game.events.removeListener("zoomReset");
+    this.game.events.removeAllListeners();
+    // this.game.events.removeListener("enter");
+    // this.game.events.removeListener("stars");
+    // this.game.events.removeListener("jump");
+    // this.game.events.removeListener("onMove");
+    // this.game.events.removeListener("zoomIn");
+    // this.game.events.removeListener("zoomOut");
+    // this.game.events.removeListener("zoomReset");
   }
 }
 

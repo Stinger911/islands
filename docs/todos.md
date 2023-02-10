@@ -6,9 +6,12 @@ TODO:
 - [x] 🐞 Fix keyboards events on PlanetView (duplicates after the scene changes)<br/>
       **NOTE:** can't reproduce; occurs only then scene reloaded during dev
 - [ ] ✨ Add map rotation effect on triangle change
-- [ ] 🐞 zoom- & zoom0 doesn't work
+- [x] 🐞 zoom- & zoom0 doesn't work
 - [ ] ✅ Generate entities (objects and actors) on planet map. Make ability to add entities in dynamics (i.e. by quests and sporadically)
 - [ ] ✅ Draw entities on map
+- [ ] ✅ Implement "Load Game"
 - [ ] ✅ Add UI to react on entity
 - [ ] ✅ Add entity reactions system (like events)
 - [ ] ✅ Add "Battle" view
+- [ ] ✅ Add Jump UI (at least "random jump")
+- [ ] ✨ Add jump effect on change planet

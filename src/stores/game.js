@@ -50,10 +50,12 @@ export const useGameStore = defineStore("gameData", {
     },
     planet(state) {
       // console.log(state.ss.planets[state.loc_planet]);
-      return {
-        name: state.home_name + " " + romanize(state.loc_planet + 1),
-        map: state.ss.planets[state.loc_planet].map,
-      };
+      let star = state.home_name;
+      // if (state.loc_segment > -1) {
+      // }
+      let pln = state.ss.planets[state.loc_planet];
+      pln.name = star + " " + romanize(state.loc_planet + 1);
+      return pln;
     },
     json(state) {
       const dts = new Date().toString().split(" ").slice(0, 5).join(" ");

@@ -1,10 +1,13 @@
 <template>
   <div class="fit row wrap justify-around items-start content-center">
-    <q-btn-group outline class="self-center">
-      <q-btn outline label="-" @click="onZoomOut" />
-      <q-btn outline label="0" @click="onZoomZero" />
-      <q-btn outline label="+" @click="onZoomIn" />
-    </q-btn-group>
+    <div class="column self-center">
+      <q-linear-progress :value="zoom()" color="warning" class="q-mt-sm" />
+      <q-btn-group outline class="self-center">
+        <q-btn outline label="-" @click="onZoomOut" />
+        <q-btn outline label="0" @click="onZoomZero" />
+        <q-btn outline label="+" @click="onZoomIn" />
+      </q-btn-group>
+    </div>
     <div class="column self-center">
       <q-btn
         v-if="hasHangar()"
@@ -88,6 +91,9 @@ export default {
     const game = useGameStore();
     const main = useMainStore();
     return {
+      zoom() {
+        return main.zoom;
+      },
       onEnter() {
         if (this.hasHangar()) {
           game.loc_bld = main.blds.idx;
